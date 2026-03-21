@@ -54,7 +54,7 @@ export default function OnboardingModal() {
         {step === 1 && (
           <div className="flex flex-col gap-6">
              <div className="text-center">
-               <div className="w-12 h-12 bg-white/5 border border-border rounded-full flex items-center justify-center mx-auto mb-4 text-accent">
+               <div className="w-12 h-12 bg-text/5 border border-border rounded-full flex items-center justify-center mx-auto mb-4 text-accent">
                  <User className="w-6 h-6" />
                </div>
                <h2 className="font-head font-bold text-2xl text-text">Financial Profile</h2>
@@ -103,7 +103,7 @@ export default function OnboardingModal() {
         {step === 2 && (
           <div className="flex flex-col gap-6 animate-in slide-in-from-right-10">
              <div className="text-center">
-               <div className="w-12 h-12 bg-yellow/10 border border-yellow/20 rounded-full flex items-center justify-center mx-auto mb-4 text-yellow">
+               <div className="w-12 h-12 bg-accent/10 border border-accent/20 rounded-full flex items-center justify-center mx-auto mb-4 text-accent">
                  <Globe2 className="w-6 h-6" />
                </div>
                <h2 className="font-head font-bold text-2xl text-text">Data & Permissions</h2>

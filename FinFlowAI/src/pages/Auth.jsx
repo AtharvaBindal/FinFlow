@@ -80,21 +80,31 @@ export default function Auth() {
   const handleLogin = (e) => {
     e.preventDefault();
     setError('');
-    if (!email || !password) { setError('Please fill in all fields.'); return; }
+    let finalEmail = email.trim().toLowerCase();
+    if (!finalEmail || !password) { setError('Please fill in all fields.'); return; }
+    
+    // Auto-complete domain if missing
+    if (!finalEmail.includes('@')) finalEmail += '@gmail.com';
+    else if (finalEmail.endsWith('@')) finalEmail += 'gmail.com';
+    
+    if (!finalEmail.endsWith('@gmail.com') && !finalEmail.endsWith('@yahoo.com')) {
+      setError('Please use a @gmail.com or @yahoo.com email address.');
+      return;
+    }
     
     // Check if user exists
-    const stored = localStorage.getItem(`finflow_account_${email}`);
+    const stored = localStorage.getItem(`finflow_account_${finalEmail}`);
     if (!stored) { setError('No account found. Please sign up first.'); return; }
     
     const account = JSON.parse(stored);
     if (account.password !== password) { setError('Incorrect password. Please try again.'); return; }
     
-    saveLoginEvent(email);
+    saveLoginEvent(finalEmail);
     setUser(prev => ({
       ...prev,
       isAuthenticated: true,
-      email,
-      name: account.name || prev.name || email.split('@')[0],
+      email: finalEmail,
+      name: account.name || prev.name || finalEmail.split('@')[0],
     }));
     navigate('/dashboard');
   };
@@ -105,19 +115,31 @@ export default function Auth() {
     
     if (!fullName.trim()) { setError('Please enter your full name.'); return; }
     if (!isValidName(fullName)) { setError('Name must contain only letters (first, middle, or last name).'); return; }
-    if (!email) { setError('Please enter an email address.'); return; }
+    
+    let finalEmail = email.trim().toLowerCase();
+    if (!finalEmail) { setError('Please enter an email address.'); return; }
+    
+    // Auto-complete domain if missing
+    if (!finalEmail.includes('@')) finalEmail += '@gmail.com';
+    else if (finalEmail.endsWith('@')) finalEmail += 'gmail.com';
+    
+    if (!finalEmail.endsWith('@gmail.com') && !finalEmail.endsWith('@yahoo.com')) {
+      setError('Please use a @gmail.com or @yahoo.com email address.');
+      return;
+    }
+
     if (pwdScore < 3) { setError('Please use a stronger password (at least Fair).'); return; }
     if (password !== confirmPwd) { setError('Passwords do not match.'); return; }
     
     // Save account
-    const account = { name: fullName.trim(), email, password };
-    localStorage.setItem(`finflow_account_${email}`, JSON.stringify(account));
+    const account = { name: fullName.trim(), email: finalEmail, password };
+    localStorage.setItem(`finflow_account_${finalEmail}`, JSON.stringify(account));
     
-    saveLoginEvent(email);
+    saveLoginEvent(finalEmail);
     setUser(prev => ({
       ...prev,
       isAuthenticated: true,
-      email,
+      email: finalEmail,
       name: fullName.trim(),
       hasCompletedOnboarding: false,
     }));

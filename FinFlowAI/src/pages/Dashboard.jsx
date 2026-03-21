@@ -6,7 +6,7 @@ import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer } 
 import { Sparkles, Activity, ShieldCheck, AlertTriangle, Edit2, Check, Download } from 'lucide-react';
 import { formatCurrency, getCurrencySymbol } from '../utils/currency';
 
-const COLORS = ['#c8f135', '#6af0d8', '#ff6b6b', '#ffa94d', '#cc8cff', '#5bc0eb', '#f7d070', '#888888'];
+const COLORS = ['#a74ac9', '#6af0d8', '#8b5cf6', '#3b82f6', '#cc8cff', '#5bc0eb', '#c084fc', '#888888'];
 
 export default function Dashboard() {
   const { 
@@ -53,7 +53,7 @@ export default function Dashboard() {
   // 3. Smart Text Insights (Daily Briefing)
   const generateInsight = () => {
     if (transactions.length === 0) return "Welcome to FinFlow. Keep your wallet closed and we'll get along fine.";
-    if (balanceWarning?.level === 'critical') return "CRITICAL ALERT: You are practically bankrupt. Stop buying things immediately!";
+    if (balanceWarning?.level === 'critical') return <><span className="text-rose font-bold uppercase tracking-widest">CRITICAL ALERT:</span> You are practically bankrupt. Stop buying things immediately!</>;
     
     if (overspend > 0) return `You blew past your daily limit by ${fmt(overspend)} today. Your future self is judging you harshly right now.`;
     
@@ -103,7 +103,7 @@ export default function Dashboard() {
         
         {/* Financial Health — Video Mood Indicator */}
         <div className="glass p-6 rounded-2xl flex flex-col items-center justify-center relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent z-0"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-text/5 to-transparent z-0"></div>
           <h3 className="text-xs uppercase tracking-widest text-muted font-bold mb-4 z-10">Financial Health</h3>
           
           {/* Video container with glowing mood border */}

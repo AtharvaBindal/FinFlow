@@ -209,7 +209,7 @@ export default function Transactions() {
           <button onClick={addSimulated} className="flex items-center gap-2 text-xs text-muted hover:text-text bg-surface border border-border px-3 py-2 rounded-lg transition-colors font-mono">
              <Zap className="w-3.5 h-3.5" /> Simulate Sample Data
           </button>
-          <button onClick={handleAdd} className="bg-accent text-black font-head font-bold text-sm px-6 py-2.5 rounded-lg hover:bg-[#d4fc40] transition-colors flex items-center gap-2 tracking-wide">
+          <button onClick={handleAdd} className="bg-accent text-black font-head font-bold text-sm px-6 py-2.5 rounded-lg hover:opacity-80 transition-colors flex items-center gap-2 tracking-wide">
              {editingId ? 'Update Log' : `Add ${type === 'deposit' ? 'Deposit / Income' : 'Expense'}`} <Plus className="w-4 h-4" />
           </button>
         </div>
@@ -266,7 +266,7 @@ export default function Transactions() {
                   const catData = CATEGORIES.find(c => c.name === t.category) || { icon: '📦' };
                   
                   return (
-                    <div key={t.id} className="p-4 bg-surface rounded-xl border border-border flex justify-between items-center group hover:bg-white/5 transition-colors shadow-sm gap-2">
+                    <div key={t.id} className="p-4 bg-surface rounded-xl border border-border flex justify-between items-center group hover:bg-text/5 transition-colors shadow-sm gap-2">
                       <div className="flex items-center gap-3 overflow-hidden">
                           <div className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center text-lg shadow-sm flex-shrink-0">
                               {catData.icon}

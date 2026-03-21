@@ -84,7 +84,7 @@ export default function Sidebar() {
           
           <div className="text-[10px] text-muted flex justify-between">
              <span>Status:</span>
-             <span className={goalProgressPct >= 100 ? "text-[#1eb300] font-semibold" : goalProgressPct > 30 ? "text-yellow font-semibold" : "text-rose font-semibold"}>
+             <span className={goalProgressPct >= 100 ? "text-accent font-semibold" : goalProgressPct > 30 ? "text-accent font-semibold" : "text-rose font-semibold"}>
                {goalProgressPct >= 100 ? 'ACHIEVED' : goalProgressPct > 30 ? 'ON TRACK' : 'AT RISK'}
              </span>
           </div>

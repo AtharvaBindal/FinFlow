@@ -165,7 +165,7 @@ export default function Subscriptions() {
                onClick={() => setSelectedSub(sub)}
                className="w-full mt-2 py-3 border border-border rounded-xl text-sm font-bold text-muted hover:text-text hover:bg-surface transition-colors flex items-center justify-center gap-2"
              >
-               Should I Keep This? <AlertTriangle className="w-4 h-4 text-yellow" />
+               Should I Keep This? <AlertTriangle className="w-4 h-4 text-accent" />
              </button>
           </div>
         ))}
