@@ -7,22 +7,22 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Static dark system colors (also overridden via CSS vars in index.css)
-        bg:      '#0a0a0f',
-        surface: '#111118',
-        card:    '#16161f',
-        border:  '#ffffff12',
-        // Semantic colors (kept for compatibility with existing usage)
-        emerald: '#c8f135',
-        rose:    '#ff6b6b',
-        blue:    '#6af0d8',
-        yellow:  '#ffa94d',
-        text:    '#f0f0f5',
-        muted:   '#6b6b82',
-        // Dynamic accent — references the CSS var set by theme.js
-        // Use these new class names: bg-accent, text-accent, border-accent
-        // They are defined as utilities in index.css using var(--color-accent)
-        accent: 'var(--color-accent)',
+        // Dynamic system colors mapped to CSS variables
+        bg:      'var(--color-bg)',
+        surface: 'var(--color-surface)',
+        card:    'var(--color-card)',
+        border:  'var(--color-border)',
+        
+        // Semantic colors mapped to CSS variables
+        rose:    'var(--color-rose)',
+        blue:    'var(--color-blue)',
+        text:    'var(--color-text)',
+        muted:   'var(--color-muted)',
+        accent:  'var(--color-accent)',
+        
+        // Aliasing legacy colors to the unified theme
+        emerald: 'var(--color-accent)',
+        yellow:  'var(--color-accent)',
       },
       fontFamily: {
         mono: ['"DM Mono"', 'monospace'],
