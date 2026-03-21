@@ -27,16 +27,16 @@ export default function Sidebar() {
   };
 
   // Wishlist Math
-  const currentMonth = new Date().toISOString().slice(0, 7);
-  const thisMonthTxs = transactions.filter(t => t.date.startsWith(currentMonth));
-  const monthSpent = thisMonthTxs.reduce((acc, t) => acc + t.amount, 0);
-
-  const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
-  const safeTotalMonth = wishlist.income - wishlist.essentialBills - wishlist.goalPrice;
-  const avgPace = Math.round((monthSpent / new Date().getDate()) * daysInMonth);
+  // Dream Tracker Math (Identical to Dashboard calculation)
+  const totalSavedSoFar = Math.max(0, (balance || 0) - (wishlist.essentialBills || 0));
+  const goalProgressPct = Math.min(100, wishlist.goalPrice > 0 ? (totalSavedSoFar / wishlist.goalPrice) * 100 : 0);
   
-  // Projection logic
-  const onTrack = avgPace <= safeTotalMonth;
+  const getProgressColor = (pct) => {
+    const r = Math.round(255 - (pct / 100) * (255 - 30));
+    const g = Math.round(60 + (pct / 100) * (179 - 60));
+    const b = Math.round(60 - (pct / 100) * 60);
+    return `rgb(${r},${g},${b})`;
+  };
 
   return (
     <div className="glass w-full h-full flex flex-col pt-8 pb-6 px-4 shadow-2xl relative overflow-hidden">
@@ -80,18 +80,17 @@ export default function Sidebar() {
           
           <div className="flex flex-col gap-1 mb-3">
              <span className="text-[10px] text-muted uppercase tracking-widest">{wishlist.goalName}</span>
-             <span className="text-lg font-head font-bold" style={{ color: 'var(--color-accent)' }}>${wishlist.goalPrice.toLocaleString()}</span>
+             <span className="text-lg font-head font-bold text-[#2c9b99]">${wishlist.goalPrice.toLocaleString()}</span>
           </div>
 
-          <div className="w-full bg-card h-1.5 rounded-full overflow-hidden mb-2">
-             {/* Simulating progress bar for UI */}
-             <div className={onTrack ? 'h-full' : 'h-full bg-rose'} style={onTrack ? { width: '75%', backgroundColor: 'var(--color-accent)' } : { width: '40%' }}></div>
+          <div className="w-full bg-surface h-1.5 rounded-full overflow-hidden mb-2 relative border border-[#2c9b99]/30">
+             <div className="h-full transition-all duration-1000 ease-out" style={{ width: `${goalProgressPct}%`, backgroundColor: getProgressColor(goalProgressPct) }}></div>
           </div>
           
           <div className="text-[10px] text-muted flex justify-between">
              <span>Status:</span>
-             <span className={onTrack ? "text-emerald font-semibold" : "text-rose font-semibold"}>
-               {onTrack ? 'ON TRACK' : 'AT RISK'}
+             <span className={goalProgressPct >= 100 ? "text-[#1eb300] font-semibold" : goalProgressPct > 30 ? "text-yellow font-semibold" : "text-rose font-semibold"}>
+               {goalProgressPct >= 100 ? 'ACHIEVED' : goalProgressPct > 30 ? 'ON TRACK' : 'AT RISK'}
              </span>
           </div>
         </div>
