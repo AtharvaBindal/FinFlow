@@ -42,7 +42,8 @@ export default function Auth() {
 
   const [error, setError] = useState('');
   
-  const { setUser } = useAppContext();
+  const { user, setUser } = useAppContext();
+  const accentColor = user?.accentColor || '#c8f135';
   const navigate = useNavigate();
 
   // Password strength (shown only during signup)
@@ -126,15 +127,28 @@ export default function Auth() {
   return (
     <div className="w-full min-h-screen flex items-center justify-center relative p-4 bg-bg text-text font-mono z-50">
       
-      {/* Background */}
+      {/* Dynamic Animated Background */}
       <div className="absolute inset-0 bg-grid pointer-events-none opacity-50 z-0"></div>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald/10 blur-[100px] rounded-full z-0 pointer-events-none"></div>
+      <div className="absolute overflow-hidden inset-0 pointer-events-none z-0">
+        <div 
+          className="absolute -top-[10%] -left-[10%] w-[50vw] h-[50vw] rounded-full blur-[100px] opacity-20 animate-[pulse_6s_ease-in-out_infinite]"
+          style={{ backgroundColor: accentColor }}
+        ></div>
+        <div 
+          className="absolute top-[40%] -right-[10%] w-[60vw] h-[60vw] rounded-full blur-[120px] opacity-20 animate-[pulse_8s_ease-in-out_infinite]"
+          style={{ backgroundColor: accentColor, animationDelay: '2s' }}
+        ></div>
+        <div 
+          className="absolute -bottom-[20%] left-[20%] w-[40vw] h-[40vw] rounded-full blur-[90px] opacity-10 animate-[pulse_7s_ease-in-out_infinite]"
+          style={{ backgroundColor: accentColor, animationDelay: '4s' }}
+        ></div>
+      </div>
 
       <div className="glass w-full max-w-sm p-8 rounded-3xl shadow-2xl z-10 animate-in zoom-in-95 duration-500">
         
         {/* Logo */}
         <div className="text-center mb-6">
-          <div className="w-12 h-12 rounded-xl bg-emerald mx-auto flex items-center justify-center font-head font-bold text-bg text-3xl shadow-[0_0_20px_rgba(200,241,53,0.3)] mb-4">F</div>
+          <div className="w-12 h-12 rounded-xl bg-accent mx-auto flex items-center justify-center font-head font-bold text-bg text-3xl accent-glow mb-4">F</div>
           <h1 className="font-head font-bold text-3xl tracking-tight text-white mb-1">
             {mode === 'login' ? 'Welcome Back' : 'Create Account'}
           </h1>
@@ -145,7 +159,7 @@ export default function Auth() {
         <div className="flex bg-surface border border-border rounded-xl p-1 mb-6">
           {['login', 'signup'].map(m => (
             <button key={m} onClick={() => { setMode(m); setError(''); }}
-              className={`flex-1 py-2 rounded-lg text-sm font-bold font-head capitalize transition-all ${mode === m ? 'bg-emerald text-bg shadow' : 'text-muted hover:text-white'}`}>
+              className={`flex-1 py-2 rounded-lg text-sm font-bold font-head capitalize transition-all ${mode === m ? 'bg-accent text-bg shadow' : 'text-muted hover:text-white'}`}>
               {m === 'login' ? 'Sign In' : 'Sign Up'}
             </button>
           ))}
@@ -170,7 +184,7 @@ export default function Auth() {
                   type="text"
                   required
                   maxLength={60}
-                  className={`w-full bg-surface/50 border p-3 pl-10 rounded-xl outline-none transition-all text-sm placeholder-muted ${nameError ? 'border-rose focus:border-rose' : 'border-border focus:border-emerald focus:ring-1 ring-emerald'}`}
+                  className={`w-full bg-surface/50 border p-3 pl-10 rounded-xl outline-none transition-all text-sm placeholder-muted ${nameError ? 'border-rose focus:border-rose' : 'border-border focus:border-accent focus:ring-1 ring-accent'}`}
                   placeholder="John Michael Doe"
                   value={fullName}
                   onChange={e => handleNameChange(e.target.value)}
@@ -178,7 +192,7 @@ export default function Auth() {
               </div>
               {nameError && <p className="text-[10px] text-rose pl-1">{nameError}</p>}
               {!nameError && fullName.trim().length > 0 && isValidName(fullName) && (
-                <p className="text-[10px] text-emerald pl-1 flex items-center gap-1"><CheckCircle className="w-3 h-3"/> Looks good!</p>
+                <p className="text-[10px] text-accent pl-1 flex items-center gap-1"><CheckCircle className="w-3 h-3"/> Looks good!</p>
               )}
             </div>
           )}
@@ -191,7 +205,7 @@ export default function Auth() {
               <input
                 type="email"
                 required
-                className="w-full bg-surface/50 border border-border p-3 pl-10 rounded-xl outline-none focus:border-emerald focus:ring-1 ring-emerald transition-all placeholder-muted text-sm"
+                className="w-full bg-surface/50 border border-border p-3 pl-10 rounded-xl outline-none focus:border-accent focus:ring-1 ring-accent transition-all placeholder-muted text-sm"
                 placeholder="you@example.com"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
@@ -203,14 +217,14 @@ export default function Auth() {
           <div className="flex flex-col gap-1">
             <div className="flex justify-between items-end pl-1">
               <label className="text-[10px] text-muted uppercase tracking-widest font-semibold">Password</label>
-              {mode === 'login' && <a href="#" className="text-[10px] text-emerald hover:underline">Forgot?</a>}
+              {mode === 'login' && <a href="#" className="text-[10px] text-accent hover:underline">Forgot?</a>}
             </div>
             <div className="relative flex items-center">
               <Lock className="absolute left-3 w-4 h-4 text-muted" />
               <input
                 type={showPwd ? 'text' : 'password'}
                 required
-                className="w-full bg-surface/50 border border-border p-3 pl-10 pr-10 rounded-xl outline-none focus:border-emerald focus:ring-1 ring-emerald transition-all placeholder-muted text-sm tracking-widest"
+                className="w-full bg-surface/50 border border-border p-3 pl-10 pr-10 rounded-xl outline-none focus:border-accent focus:ring-1 ring-accent transition-all placeholder-muted text-sm tracking-widest"
                 placeholder="••••••••"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
@@ -237,7 +251,7 @@ export default function Auth() {
                     { key: 'number',    label: 'Number'    },
                     { key: 'special',   label: 'Special (!@#)' },
                   ].map(({ key, label }) => (
-                    <span key={key} className={`flex items-center gap-1 ${pwdChecks[key] ? 'text-emerald' : 'text-muted'}`}>
+                    <span key={key} className={`flex items-center gap-1 ${pwdChecks[key] ? 'text-accent' : 'text-muted'}`}>
                       {pwdChecks[key] ? <CheckCircle className="w-2.5 h-2.5" /> : <XCircle className="w-2.5 h-2.5" />}
                       {label}
                     </span>
@@ -259,7 +273,7 @@ export default function Auth() {
                 <input
                   type={showConfirmPwd ? 'text' : 'password'}
                   required
-                  className={`w-full bg-surface/50 border p-3 pl-10 pr-10 rounded-xl outline-none transition-all placeholder-muted text-sm tracking-widest ${confirmPwd && confirmPwd !== password ? 'border-rose' : 'border-border focus:border-emerald focus:ring-1 ring-emerald'}`}
+                  className={`w-full bg-surface/50 border p-3 pl-10 pr-10 rounded-xl outline-none transition-all placeholder-muted text-sm tracking-widest ${confirmPwd && confirmPwd !== password ? 'border-rose' : 'border-border focus:border-accent focus:ring-1 ring-accent'}`}
                   placeholder="••••••••"
                   value={confirmPwd}
                   onChange={e => setConfirmPwd(e.target.value)}
@@ -272,21 +286,21 @@ export default function Auth() {
                 <p className="text-[10px] text-rose pl-1 flex items-center gap-1"><XCircle className="w-3 h-3" /> Passwords do not match</p>
               )}
               {confirmPwd && confirmPwd === password && (
-                <p className="text-[10px] text-emerald pl-1 flex items-center gap-1"><CheckCircle className="w-3 h-3" /> Passwords match!</p>
+                <p className="text-[10px] text-accent pl-1 flex items-center gap-1"><CheckCircle className="w-3 h-3" /> Passwords match!</p>
               )}
             </div>
           )}
 
           <button
             type="submit"
-            className="mt-2 w-full bg-emerald text-bg font-head font-bold text-base py-3.5 rounded-xl hover:bg-white hover:-translate-y-0.5 shadow-[0_4px_14px_rgba(200,241,53,0.3)] hover:shadow-[0_6px_20px_rgba(255,255,255,0.4)] transition-all active:translate-y-0"
+            className="mt-2 w-full bg-accent text-bg font-head font-bold text-base py-3.5 rounded-xl hover:bg-white hover:-translate-y-0.5 accent-glow transition-all active:translate-y-0"
           >
             {mode === 'login' ? 'Sign In' : 'Create Account'}
           </button>
 
           <div className="text-center">
             <p className="text-xs text-muted flex items-center justify-center gap-1.5">
-              <ShieldAlert className="w-3 h-3 text-emerald" /> Secure Encrypted Connection
+              <ShieldAlert className="w-3 h-3 text-accent" /> Secure Encrypted Connection
             </p>
           </div>
         </form>

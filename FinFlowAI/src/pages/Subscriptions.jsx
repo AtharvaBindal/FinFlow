@@ -3,8 +3,10 @@ import { useAppContext } from '../context/AppContext';
 import { Ghost, DollarSign, ExternalLink, Calendar, AlertTriangle } from 'lucide-react';
 
 export default function Subscriptions() {
-  const { transactions } = useAppContext();
+  const { transactions, manualVampires, setManualVampires } = useAppContext();
   const [selectedSub, setSelectedSub] = useState(null);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newSub, setNewSub] = useState({ merchant: '', amount: '' });
 
   // Auto-detect subscriptions by finding duplicate exact amounts to the same merchant
   // (In a real app, we'd use flags or ML, here we use a clever heuristic)
@@ -57,10 +59,34 @@ export default function Subscriptions() {
       }
     });
 
-    return identifiedSubs.sort((a,b) => b.yearlyBleed - a.yearlyBleed);
+    return identifiedSubs;
   }, [transactions]);
 
-  const totalYearlyBleed = subscriptions.reduce((acc, sub) => acc + sub.yearlyBleed, 0);
+  const allSubscriptions = useMemo(() => {
+    return [...subscriptions, ...manualVampires].sort((a,b) => b.yearlyBleed - a.yearlyBleed);
+  }, [subscriptions, manualVampires]);
+
+  const totalYearlyBleed = allSubscriptions.reduce((acc, sub) => acc + sub.yearlyBleed, 0);
+
+  const handleAddManual = () => {
+    if (!newSub.merchant || !newSub.amount || Number(newSub.amount) <= 0) return alert('Fill valid details');
+    setManualVampires(prev => [...prev, {
+      id: Date.now(),
+      merchant: newSub.merchant,
+      amount: Number(newSub.amount),
+      frequency: 'Monthly',
+      yearlyBleed: Number(newSub.amount) * 12,
+      lastCharged: 'Manual Entry',
+      totalOccurrences: 1,
+      isManual: true
+    }]);
+    setNewSub({ merchant: '', amount: '' });
+    setShowAddForm(false);
+  };
+  
+  const removeManual = (id) => {
+    setManualVampires(prev => prev.filter(v => v.id !== id));
+  };
 
   return (
     <div className="w-full flex flex-col gap-6 animate-in fade-in duration-500 pb-20 relative">
@@ -81,17 +107,43 @@ export default function Subscriptions() {
         <span className="text-5xl font-black font-head tracking-tighter text-white z-10">${totalYearlyBleed.toFixed(0)}</span>
         <span className="text-xs text-muted mt-2 z-10">Money you lose every single year to recurring charges.</span>
       </div>
+      
+      <div className="flex justify-between items-center px-1">
+         <h2 className="text-sm font-bold tracking-widest uppercase text-white font-head drop-shadow-md">Active Bloodsuckers</h2>
+         <button onClick={() => setShowAddForm(!showAddForm)} className="text-xs font-bold bg-surface border border-border px-4 py-2 rounded-lg text-white hover:border-rose transition-colors">
+            {showAddForm ? 'Cancel' : '+ Add Vampire'}
+         </button>
+      </div>
 
-      {transactions.length === 0 && (
+      {showAddForm && (
+        <div className="glass p-5 rounded-2xl flex flex-col md:flex-row gap-4 items-end animate-in slide-in-from-top-4 duration-300 border-rose/30 bg-rose/5">
+           <div className="flex-1 w-full">
+             <label className="text-[10px] uppercase font-bold text-rose mb-1 block">What is it?</label>
+             <input type="text" value={newSub.merchant} onChange={e => setNewSub({...newSub, merchant: e.target.value})} placeholder="e.g. Netflix, Gym" className="w-full bg-surface border border-border rounded-lg p-2.5 text-sm text-white outline-none focus:border-rose" />
+           </div>
+           <div className="flex-1 w-full">
+             <label className="text-[10px] uppercase font-bold text-rose mb-1 block">Monthly Cost ($)</label>
+             <input type="number" value={newSub.amount} onChange={e => setNewSub({...newSub, amount: e.target.value})} placeholder="0.00" className="w-full bg-surface border border-border rounded-lg p-2.5 text-sm font-mono text-white outline-none focus:border-rose" />
+           </div>
+           <button onClick={handleAddManual} className="w-full md:w-auto bg-rose text-bg font-bold px-6 py-2.5 rounded-lg whitespace-nowrap hover:bg-white transition-colors">
+              Save Bloodsucker
+           </button>
+        </div>
+      )}
+
+      {allSubscriptions.length === 0 && !showAddForm && (
          <div className="text-center p-10 glass border-dashed">
-            <p className="text-muted">No transactions found. Go to Dashboard and 'Simulate Demo Data'!</p>
+            <p className="text-muted">No subscriptions found. You are completely free of bloodsuckers! Or you can add them manually.</p>
          </div>
       )}
 
       {/* Subscriptions List */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {subscriptions.map((sub, idx) => (
+        {allSubscriptions.map((sub, idx) => (
           <div key={idx} className="glass p-5 rounded-xl border-border flex flex-col gap-4 relative group hover:border-rose/50 transition-colors">
+             {sub.isManual && (
+                <button onClick={() => removeManual(sub.id)} className="absolute -top-2 -right-2 bg-rose text-bg w-6 h-6 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity font-bold">×</button>
+             )}
              <div className="flex justify-between items-start">
                <div>
                  <h3 className="font-bold text-lg text-white capitalize">{sub.merchant}</h3>

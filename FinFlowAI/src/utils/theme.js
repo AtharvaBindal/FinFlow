@@ -35,24 +35,24 @@ const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
  * Returns an object of { '--var-name': 'value' } pairs.
  * @param {string} hex - e.g. '#c8f135'
  */
-export function generatePalette(hex) {
+export function generatePalette(hex, isLight = false) {
   const { h, s } = hexToHSL(hex);
 
   // Accent: use the chosen color directly as-is
-  const accent     = `hsl(${h}, ${s}%, 62%)`;    // Main accent (vibrant)
-  const accentDim  = `hsl(${h}, ${s}%, 35%)`;    // Dimmer accent (darker on-accent text bg)
+  const accent     = `hsl(${h}, ${s}%, ${isLight ? '45%' : '62%'})`;    // Main accent (vibrant but darker in light mode for contrast)
+  const accentDim  = `hsl(${h}, ${s}%, ${isLight ? '85%' : '35%'})`;    // Dimmer accent (lighter in light mode for subtle bg)
   const accentGlow = `hsl(${h}, ${s}%, 62%, 0.3)`;  // Glow shadow
 
-  // Background stays very dark but shifts hue slightly toward the accent
+  // Background shifts hue slightly toward the accent
   const bgH = h;
-  const bg       = `hsl(${bgH}, 18%, 5%)`;       // Main background
-  const surface  = `hsl(${bgH}, 15%, 8%)`;       // Cards / surfaces
-  const card     = `hsl(${bgH}, 14%, 10%)`;      // Inner cards
-  const border   = `hsl(${bgH}, 20%, 100%, 0.08)`;  // Borders (subtle)
+  const bg       = isLight ? `hsl(${bgH}, 20%, 98%)` : `hsl(${bgH}, 18%, 5%)`;       
+  const surface  = isLight ? `hsl(${bgH}, 20%, 100%)` : `hsl(${bgH}, 15%, 8%)`;       
+  const card     = isLight ? `hsl(${bgH}, 25%, 96%)` : `hsl(${bgH}, 14%, 10%)`;      
+  const border   = isLight ? `hsl(${bgH}, 20%, 0%, 0.1)` : `hsl(${bgH}, 20%, 100%, 0.08)`;  
 
   // Text
-  const textColor = `hsl(${h}, 10%, 94%)`;
-  const muted     = `hsl(${h}, 12%, 50%)`;
+  const textColor = isLight ? `hsl(${bgH}, 15%, 15%)` : `hsl(${h}, 10%, 94%)`;
+  const muted     = isLight ? `hsl(${bgH}, 15%, 45%)` : `hsl(${h}, 12%, 50%)`;
 
   // Complementary semantic colors (shifted hue from accent)
   const rose   = `hsl(${(h + 160) % 360}, 85%, 65%)`;   // "Danger" / overspend
@@ -80,10 +80,11 @@ export function generatePalette(hex) {
 /**
  * Apply a palette to document.documentElement CSS custom properties.
  * @param {string} hex
+ * @param {boolean} isLight
  */
-export function applyTheme(hex) {
+export function applyTheme(hex, isLight = false) {
   if (!hex || hex.length < 7) return;
-  const palette = generatePalette(hex);
+  const palette = generatePalette(hex, isLight);
   Object.entries(palette).forEach(([key, value]) => {
     document.documentElement.style.setProperty(key, value);
   });

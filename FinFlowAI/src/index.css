@@ -22,6 +22,15 @@
   --color-s:            88%;
 }
 
+.light-theme {
+  --color-bg:           hsl(0, 0%, 96%);
+  --color-surface:      hsl(0, 0%, 100%);
+  --color-card:         hsl(0, 0%, 98%);
+  --color-border:       hsl(0, 0%, 0%, 0.1);
+  --color-text:         hsl(0, 0%, 10%);
+  --color-muted:        hsl(0, 0%, 40%);
+}
+
 @layer base {
   body {
     background-color: var(--color-bg);

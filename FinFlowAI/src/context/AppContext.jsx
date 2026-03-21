@@ -14,6 +14,7 @@ export function AppProvider({ children }) {
       email: '',
       currency: 'USD',
       accentColor: '#c8f135',
+      theme: 'dark',
       safeSpendOverride: 0, // 0 = auto-calculate, >0 = user-set daily limit
       permissions: { sms: false, location: false, community: false }
     };
@@ -21,13 +22,14 @@ export function AppProvider({ children }) {
 
   const getStorageKey = (key) => user.email ? `${key}_${user.email}` : key;
 
-  // Apply theme palette whenever accent color changes
+  // Apply theme palette whenever accent color or theme mode changes
   useEffect(() => {
-    applyTheme(user.accentColor || '#c8f135');
-  }, [user.accentColor]);
+    applyTheme(user.accentColor || '#c8f135', user.theme === 'light');
+  }, [user.accentColor, user.theme]);
 
   const [transactions, setTransactions] = useState([]);
   const [auditLogs, setAuditLogs] = useState([]);
+  const [manualVampires, setManualVampires] = useState([]);
   const [budgets, setBudgets] = useState({});
   const [wishlist, setWishlist] = useState({ income: 50000, goalName: 'Vacation', goalPrice: 20000, essentialBills: 15000 });
 
@@ -39,6 +41,9 @@ export function AppProvider({ children }) {
       
       const savedLogs = localStorage.getItem(getStorageKey('finflow_audit_logs'));
       setAuditLogs(savedLogs ? JSON.parse(savedLogs) : []);
+      
+      const savedVampires = localStorage.getItem(getStorageKey('finflow_manual_vampires'));
+      setManualVampires(savedVampires ? JSON.parse(savedVampires) : []);
       
       const savedBudgets = localStorage.getItem(getStorageKey('finflow_budgets'));
       setBudgets(savedBudgets ? JSON.parse(savedBudgets) : {
@@ -70,11 +75,12 @@ export function AppProvider({ children }) {
     if (user.email) {
       localStorage.setItem(`finflow_transactions_${user.email}`, JSON.stringify(transactions));
       localStorage.setItem(`finflow_audit_logs_${user.email}`, JSON.stringify(auditLogs));
+      localStorage.setItem(`finflow_manual_vampires_${user.email}`, JSON.stringify(manualVampires));
       localStorage.setItem(`finflow_budgets_${user.email}`, JSON.stringify(budgets));
       localStorage.setItem(`finflow_wishlist_${user.email}`, JSON.stringify(wishlist));
     }
     localStorage.setItem('finflow_global_merch', JSON.stringify(globalMerchants));
-  }, [user, transactions, auditLogs, budgets, wishlist, globalMerchants]);
+  }, [user, transactions, auditLogs, budgets, wishlist, globalMerchants, manualVampires]);
 
   // ─── Balance & Spending Calculations ───────────────────────────────────
   const currentMonth = new Date().toISOString().slice(0, 7);
@@ -165,6 +171,7 @@ export function AppProvider({ children }) {
       user, setUser,
       transactions, addTransaction, editTransaction, deleteTransaction, setTransactions,
       auditLogs,
+      manualVampires, setManualVampires,
       budgets, setBudgets,
       wishlist, setWishlist,
       globalMerchants, processGlobalTransaction,

@@ -61,6 +61,19 @@ export default function Settings() {
         </h2>
         <p className="text-sm text-muted -mt-2">Choose your accent color — the app palette updates instantly.</p>
         <ColorPicker />
+
+        <div className="flex items-center justify-between bg-surface p-4 rounded-xl border border-border mt-2">
+          <div>
+            <span className="text-sm font-bold text-white block">Theme Mode</span>
+            <span className="text-[10px] text-muted uppercase tracking-widest">Dark or Light Interface</span>
+          </div>
+          <button 
+             onClick={() => setUser({...user, theme: user.theme === 'light' ? 'dark' : 'light'})}
+             className="bg-accent text-bg px-4 py-2 rounded-lg text-xs font-bold font-head uppercase tracking-wider transition-colors hover:bg-white"
+          >
+             {user.theme === 'light' ? 'Use Dark' : 'Use Light'}
+          </button>
+        </div>
       </div>
 
       {/* Wishlist Planner */}
