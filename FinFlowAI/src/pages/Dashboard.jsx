@@ -136,10 +136,7 @@ export default function Dashboard() {
           })()}
           
           <div className="mt-4 text-xs font-semibold uppercase tracking-wider text-center z-10 flex items-center gap-1">
-            {balance <= wishlist.goalPrice ? <><AlertTriangle className="w-4 h-4 text-rose" /> Limit Reached</> :
-             balancePercent > 75 ? <><ShieldCheck className="w-4 h-4 text-accent" /> Rockstar Status</> : 
-             balancePercent > 50 ? <><Activity className="w-4 h-4 text-accent" /> On Track</> : 
-             <><AlertTriangle className="w-4 h-4 text-rose" /> Bleeding Money</>}
+             {/* Text captions removed per user request */}
           </div>
         </div>
 
@@ -329,62 +326,52 @@ export default function Dashboard() {
         
         <h3 className="text-sm font-bold font-head uppercase tracking-wider text-text mb-6">Cash Flow Architecture</h3>
         
-        <div className="w-full overflow-x-auto pb-4">
-          <div className="min-w-[700px] h-[200px] relative flex items-center justify-between px-10">
+        <div className="w-full pb-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-4 relative w-full max-w-4xl mx-auto">
             
-            {/* SVG Connecting Lines */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
-              <defs>
-                <linearGradient id="flowGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#c8f135" stopOpacity="0.8" />
-                  <stop offset="100%" stopColor="#ff6b6b" stopOpacity="0.6" />
-                </linearGradient>
-                <linearGradient id="flowGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#c8f135" stopOpacity="0.8" />
-                  <stop offset="100%" stopColor="#6af0d8" stopOpacity="0.6" />
-                </linearGradient>
-              </defs>
-              {/* Path to Essential Bills */}
-              <path d="M 150 100 C 300 100, 300 40, 450 40" fill="none" stroke="url(#flowGrad1)" strokeWidth="8" className="opacity-50" strokeDasharray="6 4" />
-              {/* Path to Discretionary */}
-              <path d="M 150 100 C 300 100, 300 100, 450 100" fill="none" stroke="url(#flowGrad1)" strokeWidth="16" className="opacity-50" strokeDasharray="6 4" />
-              {/* Path to Savings */}
-              <path d="M 150 100 C 300 100, 300 160, 450 160" fill="none" stroke="url(#flowGrad2)" strokeWidth="12" className="opacity-80" strokeDasharray="10 5">
-                 <animate attributeName="stroke-dashoffset" from="100" to="0" dur="2s" repeatCount="indefinite" />
-              </path>
-            </svg>
-
             {/* Income Node */}
-            <div className="z-10 bg-surface border border-accent/50 p-4 rounded-xl shadow-[0_0_20px_rgba(200,241,53,0.1)] flex flex-col items-center w-36">
-              <span className="text-[10px] text-accent uppercase tracking-widest font-bold">Income</span>
-              <span className="text-xl font-black font-head text-text">{fmt(wishlist.income)}</span>
+            <div className="z-10 bg-surface border-2 border-accent/20 px-8 py-5 rounded-xl shadow-[0_0_30px_rgba(167,74,201,0.1)] flex flex-col items-center flex-shrink-0 min-w-[160px]">
+              <span className="text-xs text-accent uppercase tracking-widest font-bold mb-1">Income</span>
+              <span className="text-2xl font-black font-head text-text tracking-tighter">{fmt(wishlist.income)}</span>
+            </div>
+
+            {/* Connecting Arrows Logic for Desktop/Mobile */}
+            <div className="hidden md:flex flex-col justify-center items-center flex-1 space-y-4 px-4">
+               <div className="w-full h-[2px] bg-gradient-to-r from-accent/50 to-rose/50 rounded-full relative">
+                 <div className="absolute right-0 -top-2 w-0 h-0 border-t-[5px] border-t-transparent border-l-[8px] border-l-rose/50 border-b-[5px] border-b-transparent"></div>
+               </div>
+               <div className="w-full h-[2px] bg-gradient-to-r from-accent/50 to-blue/50 rounded-full relative">
+                 <div className="absolute right-0 -top-2 w-0 h-0 border-t-[5px] border-t-transparent border-l-[8px] border-l-blue/50 border-b-[5px] border-b-transparent"></div>
+               </div>
+               <div className="w-full h-[2px] bg-gradient-to-r from-accent/50 to-accent/50 rounded-full relative">
+                 <div className="absolute right-0 -top-2 w-0 h-0 border-t-[5px] border-t-transparent border-l-[8px] border-l-accent/50 border-b-[5px] border-b-transparent"></div>
+               </div>
             </div>
 
             {/* Split Nodes */}
-            <div className="z-10 flex flex-col justify-between h-full py-4 gap-4">
+            <div className="z-10 flex flex-col justify-between w-full md:w-auto gap-4">
                {/* Essential Node */}
-               <div className="bg-surface border border-rose/30 p-3 rounded-xl flex flex-col items-center w-36">
+               <div className="bg-surface border-l-4 border-l-rose/50 border border-border p-4 rounded-xl flex flex-col items-end md:items-start min-w-[180px] hover:scale-105 transition-transform">
                  <span className="text-[10px] text-rose uppercase tracking-widest font-bold">Fixed Bills</span>
-                 <span className="text-lg font-black font-head text-text">{fmt(wishlist.essentialBills)}</span>
+                 <span className="text-xl font-black font-head text-text mt-1">{fmt(wishlist.essentialBills)}</span>
                </div>
                
                {/* Discretionary Node */}
-               <div className="bg-surface border border-accent/30 p-3 rounded-xl flex flex-col items-center w-36 relative overflow-hidden">
-                 <div className="absolute inset-0 bg-accent/5"></div>
-                 <span className="text-[10px] text-accent uppercase tracking-widest font-bold z-10">Spent</span>
-                 <span className="text-lg font-black font-head text-text z-10">{fmt(monthSpent)}</span>
+               <div className="bg-surface border-l-4 border-l-accent/50 border border-border p-4 rounded-xl flex flex-col items-end md:items-start min-w-[180px] hover:scale-105 transition-transform relative z-20">
+                 <span className="text-[10px] text-accent uppercase tracking-widest font-bold relative z-30">Spent (Discretionary)</span>
+                 <span className="text-xl font-black font-head text-text mt-1 relative z-30">{fmt(monthSpent)}</span>
                </div>
                
                {/* Savings Node */}
-               <div className="bg-surface border border-blue/50 p-3 rounded-xl shadow-[0_0_15px_rgba(106,240,216,0.2)] flex flex-col items-center w-36">
+               <div className="bg-surface border-l-4 border-l-blue/50 border border-border p-4 rounded-xl shadow-[0_0_15px_rgba(56,189,248,0.1)] flex flex-col items-end md:items-start min-w-[180px] hover:scale-105 transition-transform">
                  <span className="text-[10px] text-blue uppercase tracking-widest font-bold">Saved (To Goal)</span>
-                 <span className="text-lg font-black font-head text-text">{fmt(totalSavedSoFar)}</span>
+                 <span className="text-xl font-black font-head text-text mt-1">{fmt(totalSavedSoFar)}</span>
                </div>
             </div>
 
           </div>
         </div>
-        <p className="text-[10px] text-muted text-center mt-2 uppercase tracking-widest">Live Dynamic Distribution Mapping</p>
+        <p className="text-[10px] text-muted text-center mt-6 uppercase tracking-widest bg-surface/50 py-2 rounded-full mx-auto max-w-xs border border-border">Live Value Module Architecture</p>
       </div>
 
     </div>
