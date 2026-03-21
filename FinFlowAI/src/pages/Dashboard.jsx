@@ -98,7 +98,7 @@ export default function Dashboard() {
           
           {/* Video container with glowing mood border */}
           {(() => {
-            const teddyLeft = balance <= (wishlist.essentialBills + wishlist.goalPrice);
+            const teddyLeft = balance <= wishlist.goalPrice;
             const mood = balancePercent <= 50 ? 'sad' : balancePercent <= 75 ? 'mid' : 'happy';
             const videoSrc = mood === 'happy' ? '/happy.mp4' : mood === 'mid' ? '/mid.mp4' : '/sad.mp4';
             const glowColor = mood === 'happy'
@@ -134,7 +134,7 @@ export default function Dashboard() {
           })()}
           
           <div className="mt-4 text-xs font-semibold uppercase tracking-wider text-center z-10 flex items-center gap-1">
-            {balance <= (wishlist.essentialBills + wishlist.goalPrice) ? <><AlertTriangle className="w-4 h-4 text-rose" /> Limit Reached</> :
+            {balance <= wishlist.goalPrice ? <><AlertTriangle className="w-4 h-4 text-rose" /> Limit Reached</> :
              balancePercent > 75 ? <><ShieldCheck className="w-4 h-4 text-accent" /> Rockstar Status</> : 
              balancePercent > 50 ? <><Activity className="w-4 h-4 text-yellow" /> On Track</> : 
              <><AlertTriangle className="w-4 h-4 text-rose" /> Bleeding Money</>}
