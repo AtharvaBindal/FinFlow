@@ -4,7 +4,7 @@ import MagicBox from '../components/MagicBox';
 import DemoModule from '../components/DemoModule';
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 import { Sparkles, Activity, ShieldCheck, AlertTriangle, Edit2, Check, Download } from 'lucide-react';
-import { formatCurrency } from '../utils/currency';
+import { formatCurrency, getCurrencySymbol } from '../utils/currency';
 
 const COLORS = ['#c8f135', '#6af0d8', '#ff6b6b', '#ffa94d', '#cc8cff', '#5bc0eb', '#f7d070', '#888888'];
 
@@ -75,7 +75,8 @@ export default function Dashboard() {
     return "You're spending exactly at a healthy pace. Keep up the good work!";
   };
 
-  // 4. Wishlist Progress Bar Math
+  // 4. Wishlist & Savings Progress Bar Math
+  const totalSavedSoFar = Math.max(0, (wishlist.income - wishlist.essentialBills - monthSpent));
   const goalProgressPercent = Math.min((balance / wishlist.goalPrice) * 100, 100).toFixed(1);
 
   return (
