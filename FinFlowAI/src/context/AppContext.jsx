@@ -14,7 +14,7 @@ export function AppProvider({ children }) {
       name: '',
       email: '',
       currency: 'USD',
-      accentColor: '#c8f135',
+      accentColor: '#a74ac9',
       theme: 'dark',
       safeSpendOverride: 0, // 0 = auto-calculate, >0 = user-set daily limit
       permissions: { sms: false, location: false, community: false }
@@ -25,7 +25,7 @@ export function AppProvider({ children }) {
 
   // Apply theme palette whenever accent color or theme mode changes
   useEffect(() => {
-    applyTheme(user.accentColor || '#c8f135', user.theme === 'light');
+    applyTheme(user.accentColor || '#a74ac9', user.theme === 'light');
   }, [user.accentColor, user.theme]);
 
   const [transactions, setTransactions] = useState([]);
@@ -57,6 +57,7 @@ export function AppProvider({ children }) {
           income: 50000, goalName: 'Vacation', goalPrice: 20000, essentialBills: 15000
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.email]);
   
   // Crowdsourced Merchant Intelligence (Global Merch DB Simulation)

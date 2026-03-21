@@ -64,7 +64,7 @@ export default function Settings() {
 
         <div className="flex items-center justify-between bg-surface p-4 rounded-xl border border-border mt-2">
           <div>
-            <span className="text-sm font-bold text-white block">Theme Mode</span>
+            <span className="text-sm font-bold text-text block">Theme Mode</span>
             <span className="text-[10px] text-muted uppercase tracking-widest">Dark or Light Interface</span>
           </div>
           <button 
@@ -126,7 +126,7 @@ export default function Settings() {
           <Clock className="w-5 h-5 text-blue" />
           <h2 className="text-lg font-bold font-head text-blue">Login History</h2>
         </div>
-        <p className="text-xs text-muted">Recent sessions for <span className="text-white">{user.email}</span></p>
+        <p className="text-xs text-muted">Recent sessions for <span className="text-text">{user.email}</span></p>
         
         {loginHistory.length === 0 ? (
           <p className="text-sm text-muted border border-dashed border-border p-4 rounded-xl text-center">No history recorded yet.</p>

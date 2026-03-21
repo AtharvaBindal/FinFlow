@@ -23,7 +23,7 @@ export default function BottomTab() {
               `flex flex-col items-center gap-1 p-2 rounded-xl transition-all duration-200 ${
                 isActive 
                   ? 'text-emerald' 
-                  : 'text-muted hover:text-white'
+                  : 'text-muted hover:text-text'
               }`
             }
           >

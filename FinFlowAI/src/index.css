@@ -102,3 +102,20 @@
   background-color: var(--color-accent) !important;
   color: var(--color-bg) !important;
 }
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50vw); }
+}
+
+@keyframes marquee-reverse {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(50vw); }
+}
+
+.marquee {
+  animation: marquee 40s linear infinite;
+}
+.marquee-reverse {
+  animation: marquee-reverse 50s linear infinite;
+}

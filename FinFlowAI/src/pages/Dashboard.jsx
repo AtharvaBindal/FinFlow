@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useAppContext } from '../context/AppContext';
 import MagicBox from '../components/MagicBox';
 import DemoModule from '../components/DemoModule';
@@ -16,6 +16,18 @@ export default function Dashboard() {
   
   const currency = user.currency || 'USD';
   const fmt = (n) => formatCurrency(Math.max(0, n), currency);
+  
+  // Dream Tracker Math
+  const totalSavedSoFar = Math.max(0, (balance || 0) - (wishlist.essentialBills || 0));
+  const goalProgressPct = Math.min(100, wishlist.goalPrice > 0 ? (totalSavedSoFar / wishlist.goalPrice) * 100 : 0);
+  const getProgressColor = (pct) => {
+    // 100% -> rgb(30, 179, 0)
+    // 0% -> rgb(255, 60, 60)
+    const r = Math.round(255 - (pct / 100) * (255 - 30));
+    const g = Math.round(60 + (pct / 100) * (179 - 60));
+    const b = Math.round(60 - (pct / 100) * 60);
+    return `rgb(${r},${g},${b})`;
+  };
   
   // 1. Math & Data Logic
   const thisMonthTxs = transactions.filter(t => t.date?.startsWith(currentMonth));
@@ -45,26 +57,6 @@ export default function Dashboard() {
   const todaySpent = thisMonthTxs.filter(t => t.date === new Date().toISOString().slice(0, 10) && t.type !== 'deposit').reduce((a, b) => a + b.amount, 0);
   const overspend = todaySpent - currentDailyLimit;
 
-  // 2. Financial Health Score Logic (starts at 700, max 850, min 300)
-  const healthScore = useMemo(() => {
-    // Base score relies on how much of the month's balance remains vs how far into the month we are
-    const todayNum = new Date().getDate();
-    const monthPacePercent = (todayNum / daysInMonth) * 100;
-    
-    // Ideal balance remaining % vs actual balance remaining %
-    const idealBalancePercent = 100 - monthPacePercent; 
-    let score = 700 + ((balancePercent - idealBalancePercent) * 2.5);
-
-    // Punish daily overspending heavily
-    if (overspend > 0) score -= Math.min(overspend * 0.5, 100); 
-    else score += 15;
-
-    // Hard punishment for critical low balance
-    if (balancePercent < 15) score -= 150;
-
-    return Math.min(Math.max(Math.round(score), 300), 850);
-  }, [balancePercent, overspend, daysInMonth]);
-
   // 3. Smart Text Insights (Daily Briefing)
   const generateInsight = () => {
     if (transactions.length === 0) return "Welcome to FinFlow! Add your first transaction to get personalized insights.";
@@ -74,10 +66,6 @@ export default function Dashboard() {
     if (balancePercent > (100 - (new Date().getDate() / daysInMonth * 100))) return `You're crushing it! You have more balance remaining than expected for this time of month.`;
     return "You're spending exactly at a healthy pace. Keep up the good work!";
   };
-
-  // 4. Wishlist & Savings Progress Bar Math
-  const totalSavedSoFar = Math.max(0, (wishlist.income - wishlist.essentialBills - monthSpent));
-  const goalProgressPercent = Math.min((balance / wishlist.goalPrice) * 100, 100).toFixed(1);
 
   return (
     <div className="w-full flex flex-col gap-6 animate-in fade-in duration-500 pb-20">
@@ -95,7 +83,7 @@ export default function Dashboard() {
       <header className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold font-head tracking-tight">Overview</h1>
-          <p className="text-sm text-muted">Welcome back, <span className="text-white font-medium capitalize">{user.name || 'Hacker'}</span>.</p>
+          <p className="text-sm text-muted">Welcome back, <span className="text-text font-medium capitalize">{user.name || 'Hacker'}</span>.</p>
         </div>
         <div className="flex items-center gap-3">
           <DemoModule />
@@ -117,40 +105,45 @@ export default function Dashboard() {
           
           {/* Video container with glowing mood border */}
           {(() => {
-            const mood = healthScore >= 750 ? 'happy' : healthScore >= 600 ? 'mid' : 'sad';
+            const mood = balancePercent < 50 ? 'sad' : balancePercent < 75 ? 'mid' : 'happy';
             const videoSrc = mood === 'happy' ? '/happy.mp4' : mood === 'mid' ? '/mid.mp4' : '/sad.mp4';
             const glowColor = mood === 'happy'
-              ? { shadow: '0 0 25px rgba(200,241,53,0.4), 0 0 60px rgba(200,241,53,0.15)', border: 'rgba(200,241,53,0.5)', badge: '#c8f135' }
+              ? { shadow: '0 0 25px rgba(200,241,53,0.4), 0 0 60px rgba(200,241,53,0.15)', border: 'var(--color-accent)', badge: 'var(--color-accent)' }
               : mood === 'mid'
-              ? { shadow: '0 0 25px rgba(255,169,77,0.4), 0 0 60px rgba(255,169,77,0.15)', border: 'rgba(255,169,77,0.5)', badge: '#ffa94d' }
-              : { shadow: '0 0 25px rgba(255,107,107,0.4), 0 0 60px rgba(255,107,107,0.15)', border: 'rgba(255,107,107,0.5)', badge: '#ff6b6b' };
+              ? { shadow: '0 0 25px rgba(255,169,77,0.4), 0 0 60px rgba(255,169,77,0.15)', border: 'var(--color-yellow)', badge: 'var(--color-yellow)' }
+              : { shadow: '0 0 25px rgba(255,107,107,0.4), 0 0 60px rgba(255,107,107,0.15)', border: 'var(--color-rose)', badge: 'var(--color-rose)' };
+            
+            // Recompute shadow colors based on variables if needed, or simply let CSS vars handle it:
+            const shadowStyle = mood === 'happy' ? 'shadow-[0_0_25px_var(--color-accent-glow)]' :
+                                mood === 'mid' ? 'shadow-[0_0_25px_var(--color-yellow)]' :
+                                'shadow-[0_0_25px_var(--color-rose)]';
+
             return (
               <div
-                className="relative w-36 h-36 rounded-2xl overflow-hidden z-10 transition-all duration-700"
-                style={{ boxShadow: glowColor.shadow, border: `2px solid ${glowColor.border}` }}
+                className={`relative w-36 h-36 rounded-2xl overflow-hidden z-10 transition-all duration-700 ${shadowStyle}`}
+                style={{ border: `2px solid ${glowColor.border}` }}
               >
                 <video key={mood} src={videoSrc} autoPlay loop muted playsInline className="w-full h-full object-cover" />
-                {/* Score badge overlay has been removed per user request, keeping only the teddy */}
               </div>
             );
           })()}
           
           <div className="mt-4 text-xs font-semibold uppercase tracking-wider text-center z-10 flex items-center gap-1">
-            {healthScore >= 750 ? <><ShieldCheck className="w-4 h-4 text-emerald" /> Rockstar Status</> : 
-             healthScore >= 600 ? <><Activity className="w-4 h-4 text-yellow" /> On Track</> : 
-             <><AlertTriangle className="w-4 h-4 text-rose" /> Needs Attention</>}
+            {balancePercent >= 75 ? <><ShieldCheck className="w-4 h-4 text-accent" /> Rockstar Status</> : 
+             balancePercent >= 50 ? <><Activity className="w-4 h-4 text-yellow" /> On Track</> : 
+             <><AlertTriangle className="w-4 h-4 text-rose" /> Bleeding Money</>}
           </div>
         </div>
 
         {/* Daily Briefing Card */}
-        <div className="md:col-span-2 glass p-6 rounded-2xl flex flex-col justify-center relative border-emerald/20">
-          <div className="absolute top-0 right-0 p-4 opacity-50"><Sparkles className="w-16 h-16 text-emerald/10" /></div>
+        <div className="md:col-span-2 glass p-6 rounded-2xl flex flex-col justify-center relative border-accent/20">
+          <div className="absolute top-0 right-0 p-4 opacity-50"><Sparkles className="w-16 h-16 text-accent/10" /></div>
           
           <div className="flex items-center gap-2 mb-3">
-             <div className="w-8 h-8 rounded-full bg-emerald text-bg flex items-center justify-center shadow-[0_0_15px_rgba(200,241,53,0.5)]">
+             <div className="w-8 h-8 rounded-full bg-accent text-bg flex items-center justify-center accent-glow">
                <Sparkles className="w-4 h-4" />
              </div>
-             <h2 className="font-head font-bold text-lg text-white">Daily AI Briefing</h2>
+             <h2 className="font-head font-bold text-lg text-text">Daily AI Briefing</h2>
           </div>
           
           <p className="text-base text-muted/90 leading-relaxed max-w-xl font-medium">
@@ -171,11 +164,11 @@ export default function Dashboard() {
                      type="number" 
                      value={tempLimit} 
                      onChange={(e) => setTempLimit(e.target.value)}
-                     className="bg-transparent border-b border-accent outline-none w-16 text-white font-bold"
+                     className="bg-transparent border-b border-accent outline-none w-16 text-text font-bold"
                      autoFocus
                      onKeyDown={(e) => e.key === 'Enter' && handleSaveLimit()}
                    />
-                   <button onClick={handleSaveLimit} className="text-accent hover:text-white"><Check className="w-4 h-4" /></button>
+                   <button onClick={handleSaveLimit} className="text-accent hover:text-text"><Check className="w-4 h-4" /></button>
                  </div>
                ) : (
                  <div className="text-lg font-bold text-emerald flex items-center gap-2 group-hover:cursor-pointer" onClick={() => { setTempLimit(currentDailyLimit.toString()); setIsEditingLimit(true); }}>
@@ -187,7 +180,7 @@ export default function Dashboard() {
 
              <div className="bg-surface/50 border border-border px-4 py-2 rounded-xl">
                <div className="text-[10px] uppercase tracking-widest text-muted">Spent Today</div>
-               <div className={`text-lg font-bold ${overspend > 0 ? 'text-rose' : 'text-white'}`}>{fmt(todaySpent)}</div>
+               <div className={`text-lg font-bold ${overspend > 0 ? 'text-rose' : 'text-text'}`}>{fmt(todaySpent)}</div>
              </div>
           </div>
         </div>
@@ -207,7 +200,7 @@ export default function Dashboard() {
                 <p className="text-xs text-muted mt-1">Available Funds</p>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-black font-head tracking-tighter text-white">{fmt(balance)}</div>
+                <div className="text-3xl font-black font-head tracking-tighter text-text">{fmt(balance)}</div>
                 <div className="flex items-center gap-1.5 justify-end mt-1">
                   <div className={`w-2 h-2 rounded-full`} style={{ backgroundColor: balanceWarning ? balanceWarning.color : '#6af0d8' }}></div>
                   <span className="text-[10px] text-muted tracking-widest uppercase font-bold text-right leading-tight">
@@ -223,12 +216,32 @@ export default function Dashboard() {
                  <div className="text-emerald font-bold font-mono">{fmt((wishlist.income || 0) + (monthDeposits || 0))}</div>
                  {monthDeposits > 0 && <div className="text-[8px] text-emerald mt-1 font-bold">+ Recent Deposit Logged</div>}
                </div>
-               <div className="bg-surface/40 p-3 rounded-xl border border-border">
+                <div className="bg-surface/40 p-3 rounded-xl border border-border">
                  <div className="text-[10px] uppercase tracking-widest text-muted mb-1">Total Out</div>
                  <div className="text-rose font-bold font-mono">{fmt(monthSpent || 0)}</div>
                </div>
             </div>
           </div>
+
+          {/* Dream Tracker Progress */}
+          {wishlist.goalName && (
+             <div className="mt-6 pt-5 border-t border-border">
+              <div className="flex justify-between items-end mb-2">
+                <div>
+                  <h3 className="text-[11px] font-bold font-head uppercase tracking-wider text-text">Target: {wishlist.goalName}</h3>
+                </div>
+                <div className="text-right flex items-baseline gap-1">
+                  <span className="text-sm font-bold text-[#2c9b99]">{fmt(totalSavedSoFar)}</span>
+                  <span className="text-[9px] text-muted">/ {fmt(wishlist.goalPrice)}</span>
+                </div>
+              </div>
+              <div className="w-full bg-surface rounded-full h-1.5 mt-1 overflow-hidden border border-[#2c9b99]/30 relative">
+                <div className="h-full transition-all duration-1000 ease-out relative" style={{ width: `${goalProgressPct}%`, backgroundColor: getProgressColor(goalProgressPct) }}>
+                  <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Export Button */}
           <button 
@@ -262,7 +275,7 @@ export default function Dashboard() {
 
         {/* Category Donut (Fixed Responsive Container Issue by using absolute sizing wrapper) */}
         <div className="glass p-6 rounded-2xl flex flex-col">
-          <h3 className="text-sm font-bold font-head uppercase tracking-wider text-white mb-4">Category Analysis</h3>
+          <h3 className="text-sm font-bold font-head uppercase tracking-wider text-text mb-4">Category Analysis</h3>
           <div className="relative w-full h-[220px] flex items-center justify-center">
             {donutData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
@@ -294,7 +307,7 @@ export default function Dashboard() {
             {donutData.length > 0 && (
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none flex-col">
                 <span className="text-[10px] text-muted uppercase tracking-widest">Total</span>
-                <span className="text-xl font-bold font-head text-white">{fmt(monthSpent)}</span>
+                <span className="text-xl font-bold font-head text-text">{fmt(monthSpent)}</span>
               </div>
             )}
           </div>
@@ -306,7 +319,7 @@ export default function Dashboard() {
       <div className="glass p-6 rounded-2xl w-full border border-border relative overflow-hidden">
         <div className="absolute -right-20 -top-20 w-64 h-64 bg-emerald/5 blur-[100px] rounded-full pointer-events-none"></div>
         
-        <h3 className="text-sm font-bold font-head uppercase tracking-wider text-white mb-6">Cash Flow Architecture</h3>
+        <h3 className="text-sm font-bold font-head uppercase tracking-wider text-text mb-6">Cash Flow Architecture</h3>
         
         <div className="w-full overflow-x-auto pb-4">
           <div className="min-w-[700px] h-[200px] relative flex items-center justify-between px-10">
@@ -336,7 +349,7 @@ export default function Dashboard() {
             {/* Income Node */}
             <div className="z-10 bg-surface border border-emerald/50 p-4 rounded-xl shadow-[0_0_20px_rgba(200,241,53,0.1)] flex flex-col items-center w-36">
               <span className="text-[10px] text-emerald uppercase tracking-widest font-bold">Income</span>
-              <span className="text-xl font-black font-head text-white">{fmt(wishlist.income)}</span>
+              <span className="text-xl font-black font-head text-text">{fmt(wishlist.income)}</span>
             </div>
 
             {/* Split Nodes */}
@@ -344,20 +357,20 @@ export default function Dashboard() {
                {/* Essential Node */}
                <div className="bg-surface border border-rose/30 p-3 rounded-xl flex flex-col items-center w-36">
                  <span className="text-[10px] text-rose uppercase tracking-widest font-bold">Fixed Bills</span>
-                 <span className="text-lg font-black font-head text-white">{fmt(wishlist.essentialBills)}</span>
+                 <span className="text-lg font-black font-head text-text">{fmt(wishlist.essentialBills)}</span>
                </div>
                
                {/* Discretionary Node */}
                <div className="bg-surface border border-yellow/30 p-3 rounded-xl flex flex-col items-center w-36 relative overflow-hidden">
                  <div className="absolute inset-0 bg-yellow/5"></div>
                  <span className="text-[10px] text-yellow uppercase tracking-widest font-bold z-10">Spent</span>
-                 <span className="text-lg font-black font-head text-white z-10">{fmt(monthSpent)}</span>
+                 <span className="text-lg font-black font-head text-text z-10">{fmt(monthSpent)}</span>
                </div>
                
                {/* Savings Node */}
                <div className="bg-surface border border-blue/50 p-3 rounded-xl shadow-[0_0_15px_rgba(106,240,216,0.2)] flex flex-col items-center w-36">
                  <span className="text-[10px] text-blue uppercase tracking-widest font-bold">Saved (To Goal)</span>
-                 <span className="text-lg font-black font-head text-white">{fmt(totalSavedSoFar)}</span>
+                 <span className="text-lg font-black font-head text-text">{fmt(totalSavedSoFar)}</span>
                </div>
             </div>
 

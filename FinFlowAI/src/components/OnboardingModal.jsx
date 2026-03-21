@@ -5,7 +5,7 @@ import { getCurrencySymbol } from '../utils/currency';
 import ColorPicker from './ColorPicker';
 
 export default function OnboardingModal() {
-  const { user, setUser, setWishlist, wishlist } = useAppContext();
+  const { user, setUser, setWishlist } = useAppContext();
   
   const [step, setStep] = useState(1);
   const [name, setName] = useState(user.name || '');
@@ -57,7 +57,7 @@ export default function OnboardingModal() {
                <div className="w-12 h-12 bg-white/5 border border-border rounded-full flex items-center justify-center mx-auto mb-4 text-emerald">
                  <User className="w-6 h-6" />
                </div>
-               <h2 className="font-head font-bold text-2xl text-white">Financial Profile</h2>
+               <h2 className="font-head font-bold text-2xl text-text">Financial Profile</h2>
                <p className="text-sm text-muted mt-1">Let's personalize your FinFlow AI engine.</p>
              </div>
 
@@ -106,7 +106,7 @@ export default function OnboardingModal() {
                <div className="w-12 h-12 bg-yellow/10 border border-yellow/20 rounded-full flex items-center justify-center mx-auto mb-4 text-yellow">
                  <Globe2 className="w-6 h-6" />
                </div>
-               <h2 className="font-head font-bold text-2xl text-white">Data & Permissions</h2>
+               <h2 className="font-head font-bold text-2xl text-text">Data & Permissions</h2>
                <p className="text-sm text-muted mt-1">Enhance your experience with smart connectivity.</p>
              </div>
 
@@ -114,7 +114,7 @@ export default function OnboardingModal() {
                 <label className="flex items-start gap-3 p-4 bg-surface rounded-xl border border-border cursor-pointer group hover:bg-white/5 transition-colors">
                   <div className="mt-0.5"><Bell className={`w-5 h-5 ${perms.sms ? 'text-emerald' : 'text-muted'}`} /></div>
                   <div className="flex-1">
-                    <div className="text-sm font-semibold text-white">SMS/Notifications</div>
+                    <div className="text-sm font-semibold text-text">SMS/Notifications</div>
                     <div className="text-[10px] text-muted leading-relaxed">For real-time spending alerts and goal warnings.</div>
                   </div>
                   <input type="checkbox" className="accent-emerald w-4 h-4 mt-1" checked={perms.sms} onChange={e => setPerms({...perms, sms: e.target.checked})} />
@@ -123,7 +123,7 @@ export default function OnboardingModal() {
                 <label className="flex items-start gap-3 p-4 bg-surface rounded-xl border border-border cursor-pointer group hover:bg-white/5 transition-colors">
                   <div className="mt-0.5"><MapPin className={`w-5 h-5 ${perms.location ? 'text-emerald' : 'text-muted'}`} /></div>
                   <div className="flex-1">
-                    <div className="text-sm font-semibold text-white">Location Data</div>
+                    <div className="text-sm font-semibold text-text">Location Data</div>
                     <div className="text-[10px] text-muted leading-relaxed">Tag merchant locations for superior auto-categorization maps.</div>
                   </div>
                   <input type="checkbox" className="accent-emerald w-4 h-4 mt-1" checked={perms.location} onChange={e => setPerms({...perms, location: e.target.checked})} />
@@ -133,7 +133,7 @@ export default function OnboardingModal() {
                   <div className="absolute inset-0 bg-emerald/5 z-0 pointer-events-none"></div>
                   <div className="mt-0.5 z-10"><Users className={`w-5 h-5 ${perms.community ? 'text-emerald' : 'text-muted'}`} /></div>
                   <div className="flex-1 z-10">
-                    <div className="text-sm font-semibold text-white flex gap-2 items-center">
+                    <div className="text-sm font-semibold text-text flex gap-2 items-center">
                        Crowdsourced Intelligence
                        <span className="text-[9px] bg-emerald/20 text-emerald px-1.5 py-0.5 rounded border border-emerald/30">HACKATHON FEATURE</span>
                     </div>
@@ -144,7 +144,7 @@ export default function OnboardingModal() {
              </div>
 
              <div className="flex gap-3 mt-2">
-               <button onClick={() => setStep(1)} className="px-5 py-3 bg-surface border border-border text-white font-bold font-head rounded-xl hover:bg-white/10 transition-colors">
+               <button onClick={() => setStep(1)} className="px-5 py-3 bg-surface border border-border text-text font-bold font-head rounded-xl hover:bg-white/10 transition-colors">
                  Back
                </button>
                <button onClick={completeOnboarding} className="flex-1 py-3 bg-emerald flex items-center justify-center gap-2 text-bg font-bold font-head rounded-xl hover:bg-white transition-colors">

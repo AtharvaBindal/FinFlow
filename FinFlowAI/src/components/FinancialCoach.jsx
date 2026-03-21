@@ -55,7 +55,7 @@ export default function FinancialCoach() {
                  <div className="w-6 h-6 rounded-full bg-emerald flex items-center justify-center font-bold text-bg text-xs">AI</div>
                  <span className="font-head font-bold text-sm">FinCoach</span>
               </div>
-              <button onClick={() => setOpen(false)} className="text-muted hover:text-white">
+              <button onClick={() => setOpen(false)} className="text-muted hover:text-text">
                  <X className="w-4 h-4" />
               </button>
            </div>

@@ -90,7 +90,8 @@ export function applyTheme(hex, isLight = false) {
 
 /** Preset brand colors with names */
 export const PRESET_COLORS = [
-  { name: 'Lime (Default)', hex: '#c8f135' },
+  { name: 'Lavender (Default)', hex: '#a74ac9' },
+  { name: 'Lime',           hex: '#c8f135' },
   { name: 'Electric Blue',  hex: '#38bdf8' },
   { name: 'Neon Pink',      hex: '#f471b5' },
   { name: 'Cyber Purple',   hex: '#a855f7' },

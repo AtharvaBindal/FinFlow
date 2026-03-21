@@ -5,7 +5,6 @@ import { Palette, Check } from 'lucide-react';
 
 export default function ColorPicker({ compact = false }) {
   const { user, setUser } = useAppContext();
-  const [showCustom, setShowCustom] = useState(false);
   const inputRef = useRef(null);
 
   const currentAccent = user.accentColor || '#c8f135';
@@ -69,7 +68,7 @@ export default function ColorPicker({ compact = false }) {
         <div className="flex items-center gap-3 p-3 rounded-xl border" style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-surface)' }}>
           <div className="w-8 h-8 rounded-lg flex-shrink-0" style={{ backgroundColor: currentAccent }} />
           <div>
-            <p className="text-xs font-bold text-white">{PRESET_COLORS.find(c => c.hex.toLowerCase() === currentAccent.toLowerCase())?.name || 'Custom Color'}</p>
+            <p className="text-xs font-bold text-text">{PRESET_COLORS.find(c => c.hex.toLowerCase() === currentAccent.toLowerCase())?.name || 'Custom Color'}</p>
             <p className="text-[10px] font-mono" style={{ color: 'var(--color-muted)' }}>{currentAccent.toUpperCase()}</p>
           </div>
           <div className="ml-auto flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full" style={{ backgroundColor: 'var(--color-accent)20', color: 'var(--color-accent)' }}>

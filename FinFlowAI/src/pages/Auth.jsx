@@ -149,7 +149,7 @@ export default function Auth() {
         {/* Logo */}
         <div className="text-center mb-6">
           <div className="w-12 h-12 rounded-xl bg-accent mx-auto flex items-center justify-center font-head font-bold text-bg text-3xl accent-glow mb-4">F</div>
-          <h1 className="font-head font-bold text-3xl tracking-tight text-white mb-1">
+          <h1 className="font-head font-bold text-3xl tracking-tight text-text mb-1">
             {mode === 'login' ? 'Welcome Back' : 'Create Account'}
           </h1>
           <p className="text-sm text-muted">{mode === 'login' ? 'Sign in to FinFlow AI' : 'Start your financial journey'}</p>
@@ -159,7 +159,7 @@ export default function Auth() {
         <div className="flex bg-surface border border-border rounded-xl p-1 mb-6">
           {['login', 'signup'].map(m => (
             <button key={m} onClick={() => { setMode(m); setError(''); }}
-              className={`flex-1 py-2 rounded-lg text-sm font-bold font-head capitalize transition-all ${mode === m ? 'bg-accent text-bg shadow' : 'text-muted hover:text-white'}`}>
+              className={`flex-1 py-2 rounded-lg text-sm font-bold font-head capitalize transition-all ${mode === m ? 'bg-accent text-bg shadow' : 'text-muted hover:text-text'}`}>
               {m === 'login' ? 'Sign In' : 'Sign Up'}
             </button>
           ))}
@@ -229,7 +229,7 @@ export default function Auth() {
                 value={password}
                 onChange={e => setPassword(e.target.value)}
               />
-              <button type="button" onClick={() => setShowPwd(v => !v)} className="absolute right-3 text-muted hover:text-white transition-colors">
+              <button type="button" onClick={() => setShowPwd(v => !v)} className="absolute right-3 text-muted hover:text-text transition-colors">
                 {showPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
@@ -278,7 +278,7 @@ export default function Auth() {
                   value={confirmPwd}
                   onChange={e => setConfirmPwd(e.target.value)}
                 />
-                <button type="button" onClick={() => setShowConfirmPwd(v => !v)} className="absolute right-3 text-muted hover:text-white transition-colors">
+                <button type="button" onClick={() => setShowConfirmPwd(v => !v)} className="absolute right-3 text-muted hover:text-text transition-colors">
                   {showConfirmPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>

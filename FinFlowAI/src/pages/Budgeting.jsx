@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useAppContext } from '../context/AppContext';
 import { Edit2 } from 'lucide-react';
 import { formatCurrency, getCurrencySymbol } from '../utils/currency';
@@ -92,7 +92,7 @@ export default function Budgeting() {
                <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2">
                     <span className="text-xl">{ICONS[cat] || ICONS.Other}</span>
-                    <span className="font-semibold font-head tracking-wide text-white">{cat}</span>
+                    <span className="font-semibold font-head tracking-wide text-text">{cat}</span>
                   </div>
                   <div 
                     className="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold tracking-wider"
@@ -111,7 +111,7 @@ export default function Budgeting() {
                
                <div className="flex justify-between items-center text-xs font-mono">
                   <div className="flex items-baseline gap-1">
-                    <span className="text-white font-bold">{fmt(spent)}</span>
+                    <span className="text-text font-bold">{fmt(spent)}</span>
                     <span className="text-muted">of {fmt(limit)}</span>
                   </div>
                   <button 

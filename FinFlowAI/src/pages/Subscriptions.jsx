@@ -104,13 +104,13 @@ export default function Subscriptions() {
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-rose/10 rounded-full blur-[50px]"></div>
         
         <span className="text-sm font-bold font-head uppercase tracking-widest text-rose mb-2 z-10">Total Yearly Bleed</span>
-        <span className="text-5xl font-black font-head tracking-tighter text-white z-10">${totalYearlyBleed.toFixed(0)}</span>
+        <span className="text-5xl font-black font-head tracking-tighter text-text z-10">${totalYearlyBleed.toFixed(0)}</span>
         <span className="text-xs text-muted mt-2 z-10">Money you lose every single year to recurring charges.</span>
       </div>
       
       <div className="flex justify-between items-center px-1">
-         <h2 className="text-sm font-bold tracking-widest uppercase text-white font-head drop-shadow-md">Active Bloodsuckers</h2>
-         <button onClick={() => setShowAddForm(!showAddForm)} className="text-xs font-bold bg-surface border border-border px-4 py-2 rounded-lg text-white hover:border-rose transition-colors">
+         <h2 className="text-sm font-bold tracking-widest uppercase text-text font-head drop-shadow-md">Active Bloodsuckers</h2>
+         <button onClick={() => setShowAddForm(!showAddForm)} className="text-xs font-bold bg-surface border border-border px-4 py-2 rounded-lg text-text hover:border-rose transition-colors">
             {showAddForm ? 'Cancel' : '+ Add Vampire'}
          </button>
       </div>
@@ -119,11 +119,11 @@ export default function Subscriptions() {
         <div className="glass p-5 rounded-2xl flex flex-col md:flex-row gap-4 items-end animate-in slide-in-from-top-4 duration-300 border-rose/30 bg-rose/5">
            <div className="flex-1 w-full">
              <label className="text-[10px] uppercase font-bold text-rose mb-1 block">What is it?</label>
-             <input type="text" value={newSub.merchant} onChange={e => setNewSub({...newSub, merchant: e.target.value})} placeholder="e.g. Netflix, Gym" className="w-full bg-surface border border-border rounded-lg p-2.5 text-sm text-white outline-none focus:border-rose" />
+             <input type="text" value={newSub.merchant} onChange={e => setNewSub({...newSub, merchant: e.target.value})} placeholder="e.g. Netflix, Gym" className="w-full bg-surface border border-border rounded-lg p-2.5 text-sm text-text outline-none focus:border-rose" />
            </div>
            <div className="flex-1 w-full">
              <label className="text-[10px] uppercase font-bold text-rose mb-1 block">Monthly Cost ($)</label>
-             <input type="number" value={newSub.amount} onChange={e => setNewSub({...newSub, amount: e.target.value})} placeholder="0.00" className="w-full bg-surface border border-border rounded-lg p-2.5 text-sm font-mono text-white outline-none focus:border-rose" />
+             <input type="number" value={newSub.amount} onChange={e => setNewSub({...newSub, amount: e.target.value})} placeholder="0.00" className="w-full bg-surface border border-border rounded-lg p-2.5 text-sm font-mono text-text outline-none focus:border-rose" />
            </div>
            <button onClick={handleAddManual} className="w-full md:w-auto bg-rose text-bg font-bold px-6 py-2.5 rounded-lg whitespace-nowrap hover:bg-white transition-colors">
               Save Bloodsucker
@@ -146,7 +146,7 @@ export default function Subscriptions() {
              )}
              <div className="flex justify-between items-start">
                <div>
-                 <h3 className="font-bold text-lg text-white capitalize">{sub.merchant}</h3>
+                 <h3 className="font-bold text-lg text-text capitalize">{sub.merchant}</h3>
                  <p className="text-xs text-muted flex items-center gap-1 mt-1">
                    <Calendar className="w-3 h-3" /> Last charged: {sub.lastCharged}
                  </p>
@@ -163,7 +163,7 @@ export default function Subscriptions() {
 
              <button 
                onClick={() => setSelectedSub(sub)}
-               className="w-full mt-2 py-3 border border-border rounded-xl text-sm font-bold text-muted hover:text-white hover:bg-surface transition-colors flex items-center justify-center gap-2"
+               className="w-full mt-2 py-3 border border-border rounded-xl text-sm font-bold text-muted hover:text-text hover:bg-surface transition-colors flex items-center justify-center gap-2"
              >
                Should I Keep This? <AlertTriangle className="w-4 h-4 text-yellow" />
              </button>
@@ -180,7 +180,7 @@ export default function Subscriptions() {
                  <div className="w-16 h-16 bg-rose/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-rose/20">
                     <Ghost className="w-8 h-8 text-rose" />
                  </div>
-                 <h2 className="text-2xl font-bold font-head text-white capitalize">{selectedSub.merchant} Analysis</h2>
+                 <h2 className="text-2xl font-bold font-head text-text capitalize">{selectedSub.merchant} Analysis</h2>
                  <p className="text-sm text-muted mt-2">
                    You are paying <b className="text-rose">${selectedSub.amount}/mo</b> for this service.
                  </p>
@@ -188,7 +188,7 @@ export default function Subscriptions() {
 
               <div className="bg-surface rounded-xl p-5 border border-border">
                  <h4 className="text-xs uppercase tracking-widest text-muted font-bold mb-3">Hard Truth:</h4>
-                 <ul className="text-sm text-white space-y-3 list-disc pl-4 marker:text-rose">
+                 <ul className="text-sm text-text space-y-3 list-disc pl-4 marker:text-rose">
                    <li>This costs you <b>${selectedSub.yearlyBleed.toFixed(0)}</b> every 12 months.</li>
                    <li>If you invest that money at 7% instead, it would be <b>${(selectedSub.yearlyBleed * 1.07 * 10).toFixed(0)}</b> in 10 years.</li>
                    <li>You've been charged <b>{selectedSub.totalOccurrences}</b> times for this recently.</li>
@@ -196,7 +196,7 @@ export default function Subscriptions() {
               </div>
 
               <div className="flex gap-3">
-                 <button onClick={() => setSelectedSub(null)} className="flex-1 py-3 bg-surface border border-border text-white font-bold rounded-xl hover:bg-white/10 transition-colors">
+                 <button onClick={() => setSelectedSub(null)} className="flex-1 py-3 bg-surface border border-border text-text font-bold rounded-xl hover:bg-white/10 transition-colors">
                    Close
                  </button>
                  <a href={`https://www.google.com/search?q=how+to+cancel+${selectedSub.merchant}+subscription`} target="_blank" rel="noreferrer" className="flex-1 py-3 bg-rose flex items-center justify-center gap-2 text-bg font-bold rounded-xl hover:bg-white transition-colors">

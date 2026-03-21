@@ -42,7 +42,7 @@ export default function Sidebar() {
     <div className="glass w-full h-full flex flex-col pt-8 pb-6 px-4 shadow-2xl relative overflow-hidden">
       <div className="flex items-center gap-2 mb-10 px-2">
         <div className="w-8 h-8 rounded-lg flex items-center justify-center font-head font-bold text-bg text-xl" style={{ backgroundColor: 'var(--color-accent)', boxShadow: '0 0 10px var(--color-accent-glow)' }}>F</div>
-        <h1 className="font-head font-bold text-2xl tracking-tight text-white">Fin<span style={{ color: 'var(--color-accent)' }}>Flow</span></h1>
+        <h1 className="font-head font-bold text-2xl tracking-tight text-text">Fin<span style={{ color: 'var(--color-accent)' }}>Flow</span></h1>
       </div>
 
       <nav className="flex-1 flex flex-col gap-2">
@@ -59,7 +59,7 @@ export default function Sidebar() {
               } : {}}
               className={({ isActive }) => 
                 `flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group ${
-                  isActive ? 'shadow-md' : 'text-muted hover:text-white hover:bg-white/5'
+                  isActive ? 'shadow-md' : 'text-muted hover:text-text hover:bg-white/5'
                 }`
               }
             >
@@ -73,7 +73,7 @@ export default function Sidebar() {
       {/* Wishlist Tracker Panel */}
       <div className="mt-6 mb-6 px-2">
         <div className="bg-surface border border-border rounded-2xl p-4 shadow-inner relative overflow-hidden">
-          <div className="flex items-center gap-2 text-xs font-bold font-head tracking-widest uppercase text-white mb-3">
+          <div className="flex items-center gap-2 text-xs font-bold font-head tracking-widest uppercase text-text mb-3">
              <Target className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
              Dream Tracker
           </div>
@@ -98,13 +98,13 @@ export default function Sidebar() {
       </div>
 
       <div className="mt-auto px-2">
-        <div className="flex items-center justify-between px-2 py-2 rounded-xl border border-border bg-surface/50">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full text-bg flex items-center justify-center font-bold tracking-widest text-xs uppercase" style={{ backgroundColor: 'var(--color-accent)' }}>
+        <div className="flex items-center justify-between px-2 py-2 rounded-xl border border-border bg-surface/50 mb-2">
+          <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/profile')}>
+            <div className="w-8 h-8 rounded-full text-bg flex items-center justify-center font-bold tracking-widest text-xs uppercase transition-transform group-hover:scale-105 shadow-sm" style={{ backgroundColor: 'var(--color-accent)', boxShadow: '0 0 10px var(--color-accent-glow)' }}>
               {user.name ? user.name.slice(0,2) : 'AI'}
             </div>
             <div>
-              <div className="text-sm font-semibold text-white tracking-wide truncate max-w-[100px]">{user.name || 'Hacker'}</div>
+              <div className="text-sm font-semibold text-text tracking-wide truncate max-w-[100px] group-hover:text-white transition-colors">{user.name || 'Hacker'}</div>
               <div className="text-[10px] uppercase tracking-widest" style={{ color: 'var(--color-accent)' }}>Pro Member</div>
             </div>
           </div>

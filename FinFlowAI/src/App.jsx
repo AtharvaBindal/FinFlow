@@ -9,6 +9,7 @@ import Budgeting from './pages/Budgeting';
 import Settings from './pages/Settings';
 import Auth from './pages/Auth';
 import Subscriptions from './pages/Subscriptions';
+import Profile from './pages/Profile';
 import ToastContainer from './components/ToastContainer';
 import FinancialCoach from './components/FinancialCoach';
 import OnboardingModal from './components/OnboardingModal';
@@ -30,6 +31,19 @@ function AppLayout() {
     <div className="flex h-screen w-full relative">
       {/* Background layer */}
       <div className="fixed inset-0 bg-grid pointer-events-none z-0"></div>
+      
+      {/* Floating Background Text */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 flex flex-col justify-around opacity-[0.03] select-none">
+        <div className="whitespace-nowrap font-black font-head text-8xl md:text-[150px] text-text tracking-tighter marquee">
+          CoderClansPresents#FinFlow#SmartMoneyTracker#moneyMap#WiseWallet#CoderClansPresents#FinFlow#SmartMoneyTracker#moneyMap#WiseWallet
+        </div>
+        <div className="whitespace-nowrap font-black font-head text-8xl md:text-[150px] text-text tracking-tighter marquee-reverse ml-[-50vw]">
+          CoderClansPresents#FinFlow#SmartMoneyTracker#moneyMap#WiseWallet#CoderClansPresents#FinFlow#SmartMoneyTracker#moneyMap#WiseWallet
+        </div>
+        <div className="whitespace-nowrap font-black font-head text-8xl md:text-[150px] text-text tracking-tighter marquee">
+          CoderClansPresents#FinFlow#SmartMoneyTracker#moneyMap#WiseWallet#CoderClansPresents#FinFlow#SmartMoneyTracker#moneyMap#WiseWallet
+        </div>
+      </div>
       
       {/* Router Guarded Content */}
       <Routes>
@@ -55,6 +69,7 @@ function AppLayout() {
                     <Route path="/budgeting" element={<Budgeting />} />
                     <Route path="/subscriptions" element={<Subscriptions />} />
                     <Route path="/settings" element={<Settings />} />
+                    <Route path="/profile" element={<Profile />} />
                     <Route path="*" element={<Navigate to="/dashboard" replace />} />
                   </Routes>
                 </div>

@@ -126,11 +126,11 @@ export default function Transactions() {
           <div className="flex bg-surface p-1 rounded-lg border border-border">
              <button 
                onClick={() => setType('expense')} 
-               className={`px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-md transition-all ${type === 'expense' ? 'bg-rose/20 text-rose' : 'text-muted hover:text-white'}`}
+               className={`px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-md transition-all ${type === 'expense' ? 'bg-rose/20 text-rose' : 'text-muted hover:text-text'}`}
              >Expense</button>
              <button 
                onClick={() => setType('deposit')} 
-               className={`px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-md transition-all ${type === 'deposit' ? 'bg-emerald/20 text-emerald' : 'text-muted hover:text-white'}`}
+               className={`px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-md transition-all ${type === 'deposit' ? 'bg-emerald/20 text-emerald' : 'text-muted hover:text-text'}`}
              >Deposit</button>
           </div>
         </div>
@@ -141,7 +141,7 @@ export default function Transactions() {
               type="text" 
               value={desc} 
               onChange={handleDescChange} 
-              className="bg-surface border border-border rounded-lg p-2.5 text-sm outline-none focus:border-accent transition-colors text-white font-mono"
+              className="bg-surface border border-border rounded-lg p-2.5 text-sm outline-none focus:border-accent transition-colors text-text font-mono"
               placeholder="e.g. Grocery run"
             />
           </div>
@@ -151,7 +151,7 @@ export default function Transactions() {
               type="number" 
               value={amt} 
               onChange={(e) => setAmt(e.target.value)} 
-              className="bg-surface border border-border rounded-lg p-2.5 text-sm outline-none focus:border-accent transition-colors text-white font-mono"
+              className="bg-surface border border-border rounded-lg p-2.5 text-sm outline-none focus:border-accent transition-colors text-text font-mono"
               placeholder="0.00"
               min="0" step="0.01"
             />
@@ -162,7 +162,7 @@ export default function Transactions() {
               type="date" 
               value={date} 
               onChange={(e) => setDate(e.target.value)} 
-              className="bg-surface border border-border rounded-lg p-2.5 text-sm outline-none focus:border-accent transition-colors text-white font-mono"
+              className="bg-surface border border-border rounded-lg p-2.5 text-sm outline-none focus:border-accent transition-colors text-text font-mono"
             />
           </div>
           {type === 'expense' && (
@@ -172,7 +172,7 @@ export default function Transactions() {
                 <select 
                   value={cat} 
                   onChange={(e) => setCat(e.target.value)}
-                  className="w-full bg-surface border border-border rounded-lg p-2.5 text-sm outline-none focus:border-accent transition-colors text-white font-mono appearance-none"
+                  className="w-full bg-surface border border-border rounded-lg p-2.5 text-sm outline-none focus:border-accent transition-colors text-text font-mono appearance-none"
                 >
                   <option value="">Auto-detect</option>
                   {CATEGORIES.map(c => (
@@ -195,7 +195,7 @@ export default function Transactions() {
                           className={`px-3 py-1.5 rounded-full text-[10px] font-mono border transition-all ${
                               cat === c.name 
                                   ? 'bg-accent text-black border-accent font-bold' 
-                                  : 'bg-surface text-muted border-border hover:border-muted hover:text-white'
+                                  : 'bg-surface text-muted border-border hover:border-muted hover:text-text'
                           }`}
                       >
                           {c.icon} {c.name}
@@ -206,7 +206,7 @@ export default function Transactions() {
         )}
 
         <div className="flex justify-between items-center mt-2 pt-4 border-t border-border/50">
-          <button onClick={addSimulated} className="flex items-center gap-2 text-xs text-muted hover:text-white bg-surface border border-border px-3 py-2 rounded-lg transition-colors font-mono">
+          <button onClick={addSimulated} className="flex items-center gap-2 text-xs text-muted hover:text-text bg-surface border border-border px-3 py-2 rounded-lg transition-colors font-mono">
              <Zap className="w-3.5 h-3.5" /> Simulate Sample Data
           </button>
           <button onClick={handleAdd} className="bg-accent text-black font-head font-bold text-sm px-6 py-2.5 rounded-lg hover:bg-[#d4fc40] transition-colors flex items-center gap-2 tracking-wide">
@@ -220,7 +220,7 @@ export default function Transactions() {
             <h2 className="text-xs text-muted tracking-widest uppercase font-bold">All Transactions</h2>
             <button 
               onClick={() => setShowAuditLogs(!showAuditLogs)}
-              className={`text-[10px] uppercase font-bold tracking-widest px-3 py-1.5 rounded disabled:opacity-50 ${showAuditLogs ? 'bg-rose/20 text-rose' : 'bg-surface border border-border text-muted hover:text-white'}`}
+              className={`text-[10px] uppercase font-bold tracking-widest px-3 py-1.5 rounded disabled:opacity-50 ${showAuditLogs ? 'bg-rose/20 text-rose' : 'bg-surface border border-border text-muted hover:text-text'}`}
             >
               {showAuditLogs ? 'Hide Audit Logs' : 'View Edit History'}
             </button>
@@ -247,7 +247,7 @@ export default function Transactions() {
                           </div>
                           <div>
                             <span className="text-emerald opacity-80 uppercase tracking-widest text-[9px] block mb-1">New Data</span>
-                            <div className="text-white">{log.newData.merchant} • {fmt(log.newData.amount)} • {log.newData.category}</div>
+                            <div className="text-text">{log.newData.merchant} • {fmt(log.newData.amount)} • {log.newData.category}</div>
                           </div>
                        </div>
                     </div>
@@ -291,14 +291,14 @@ export default function Transactions() {
                       </div>
                       <div className="flex items-center gap-4">
                          <div className="text-right flex flex-col gap-1">
-                            <div className={`font-head font-bold text-lg ${t.type === 'deposit' ? 'text-emerald' : 'text-white'}`}>
+                            <div className={`font-head font-bold text-lg ${t.type === 'deposit' ? 'text-emerald' : 'text-text'}`}>
                               {t.type === 'deposit' ? '+' : '-'}{fmt(t.amount)}
                             </div>
                             <div className="text-[10px] text-muted font-mono">{t.date}</div>
                          </div>
                          <button 
                            onClick={() => handleEditClick(t)} 
-                           className="text-muted hover:text-white p-2 border border-border hover:border-accent rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                           className="text-muted hover:text-text p-2 border border-border hover:border-accent rounded-lg transition-all opacity-0 group-hover:opacity-100"
                            title="Edit Transaction"
                          >
                             <Edit2 className="w-4 h-4" />
