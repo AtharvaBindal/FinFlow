@@ -37,25 +37,25 @@ export function generatePalette(hex, isLight = false) {
   const { h, s } = hexToHSL(hex);
 
   // Accent: use the chosen color directly as-is
-  const accent     = `hsl(${h}, ${s}%, ${isLight ? '45%' : '62%'})`;    // Main accent (vibrant but darker in light mode for contrast)
-  const accentDim  = `hsl(${h}, ${s}%, ${isLight ? '85%' : '35%'})`;    // Dimmer accent (lighter in light mode for subtle bg)
-  const accentGlow = `hsl(${h}, ${s}%, 62%, 0.3)`;  // Glow shadow
+  const accent     = `hsl(${h}, ${Math.min(s, 70)}%, ${isLight ? '65%' : '65%'})`;    // Main accent (softer)
+  const accentDim  = `hsl(${h}, ${Math.min(s, 60)}%, ${isLight ? '85%' : '35%'})`;    // Dimmer accent (lighter in light mode for subtle bg)
+  const accentGlow = `hsl(${h}, ${Math.min(s, 50)}%, 70%, 0.2)`;  // Glow shadow
 
   // Background shifts hue slightly toward the accent
   const bgH = h;
-  const bg       = isLight ? `hsl(${bgH}, 20%, 98%)` : `hsl(${bgH}, 18%, 5%)`;       
-  const surface  = isLight ? `hsl(${bgH}, 20%, 100%)` : `hsl(${bgH}, 15%, 8%)`;       
-  const card     = isLight ? `hsl(${bgH}, 25%, 96%)` : `hsl(${bgH}, 14%, 10%)`;      
-  const border   = isLight ? `hsl(${bgH}, 20%, 0%, 0.1)` : `hsl(${bgH}, 20%, 100%, 0.08)`;  
+  const bg       = isLight ? `hsl(${bgH}, 12%, 98%)` : `hsl(${bgH}, 18%, 8%)`;       
+  const surface  = isLight ? `hsl(${bgH}, 12%, 100%)` : `hsl(${bgH}, 15%, 11%)`;       
+  const card     = isLight ? `hsl(${bgH}, 12%, 95%)` : `hsl(${bgH}, 14%, 13%)`;      
+  const border   = isLight ? `hsl(${bgH}, 12%, 0%, 0.08)` : `hsl(${bgH}, 20%, 100%, 0.08)`;  
 
   // Text
-  const textColor = isLight ? `hsl(${bgH}, 15%, 15%)` : `hsl(${h}, 10%, 94%)`;
-  const muted     = isLight ? `hsl(${bgH}, 15%, 45%)` : `hsl(${h}, 12%, 50%)`;
+  const textColor = isLight ? `hsl(${bgH}, 10%, 25%)` : `hsl(${h}, 5%, 90%)`;
+  const muted     = isLight ? `hsl(${bgH}, 10%, 55%)` : `hsl(${h}, 8%, 55%)`;
 
-  // Complementary semantic colors (shifted hue from accent)
-  const rose   = `hsl(${(h + 160) % 360}, 85%, 65%)`;   // "Danger" / overspend
-  const blue   = `hsl(${(h + 120) % 360}, 75%, 70%)`;   // "Info"
-  const yellow = `hsl(${(h + 40)  % 360}, 90%, 65%)`;   // "Warning"
+  // Complementary semantic colors (shifted hue from accent, softened)
+  const rose   = `hsl(${(h + 160) % 360}, 75%, 70%)`;   // "Danger" / overspend
+  const blue   = `hsl(${(h + 120) % 360}, 65%, 75%)`;   // "Info"
+  const yellow = `hsl(${(h + 40)  % 360}, 80%, 70%)`;   // "Warning"
 
   return {
     '--color-accent':       accent,

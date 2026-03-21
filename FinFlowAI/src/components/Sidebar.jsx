@@ -99,15 +99,15 @@ export default function Sidebar() {
 
       <div className="mt-auto px-2">
         <div className="flex items-center justify-between px-2 py-2 rounded-xl border border-border bg-surface/50 mb-2">
-          <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/profile')}>
+          <NavLink to="/profile" className="flex items-center gap-3 group">
             <div className="w-8 h-8 rounded-full text-bg flex items-center justify-center font-bold tracking-widest text-xs uppercase transition-transform group-hover:scale-105 shadow-sm" style={{ backgroundColor: 'var(--color-accent)', boxShadow: '0 0 10px var(--color-accent-glow)' }}>
               {user.name ? user.name.slice(0,2) : 'AI'}
             </div>
             <div>
-              <div className="text-sm font-semibold text-text tracking-wide truncate max-w-[100px] group-hover:text-white transition-colors">{user.name || 'Hacker'}</div>
+              <div className="text-sm font-semibold text-text tracking-wide truncate max-w-[100px] group-hover:text-accent transition-colors">{user.name || 'Hacker'}</div>
               <div className="text-[10px] uppercase tracking-widest" style={{ color: 'var(--color-accent)' }}>Pro Member</div>
             </div>
-          </div>
+          </NavLink>
           <button onClick={handleLogout} className="p-2 text-muted hover:text-rose hover:bg-rose/10 rounded-lg transition-colors" title="Logout / Switch Account">
              <LogOut className="w-4 h-4" />
           </button>

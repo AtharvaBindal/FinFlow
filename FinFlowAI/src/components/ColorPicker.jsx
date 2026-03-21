@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import { useAppContext } from '../context/AppContext';
 import { PRESET_COLORS } from '../utils/theme';
 import { Palette, Check } from 'lucide-react';

@@ -15,7 +15,7 @@ export function AppProvider({ children }) {
       email: '',
       currency: 'USD',
       accentColor: '#a74ac9',
-      theme: 'dark',
+      theme: 'light',
       safeSpendOverride: 0, // 0 = auto-calculate, >0 = user-set daily limit
       permissions: { sms: false, location: false, community: false }
     };
