@@ -1,11 +1,12 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Receipt, PieChart, Settings } from 'lucide-react';
+import { LayoutDashboard, Receipt, PieChart, Settings, Ghost } from 'lucide-react';
 
 const navItems = [
   { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
   { name: 'Transactions', path: '/transactions', icon: Receipt },
   { name: 'Budgeting', path: '/budgeting', icon: PieChart },
+  { name: 'Vampires', path: '/subscriptions', icon: Ghost },
   { name: 'Settings', path: '/settings', icon: Settings },
 ];
 

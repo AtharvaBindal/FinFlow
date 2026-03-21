@@ -8,6 +8,7 @@ import Transactions from './pages/Transactions';
 import Budgeting from './pages/Budgeting';
 import Settings from './pages/Settings';
 import Auth from './pages/Auth';
+import Subscriptions from './pages/Subscriptions';
 import ToastContainer from './components/ToastContainer';
 import FinancialCoach from './components/FinancialCoach';
 import OnboardingModal from './components/OnboardingModal';
@@ -52,6 +53,7 @@ function AppLayout() {
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/transactions" element={<Transactions />} />
                     <Route path="/budgeting" element={<Budgeting />} />
+                    <Route path="/subscriptions" element={<Subscriptions />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="*" element={<Navigate to="/dashboard" replace />} />
                   </Routes>

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../context/AppContext';
-import { User, DollarSign, Globe2, Bell, MapPin, Users, CheckCircle } from 'lucide-react';
+import { User, DollarSign, Globe2, Bell, MapPin, Users, CheckCircle, Palette } from 'lucide-react';
+import { getCurrencySymbol } from '../utils/currency';
+import ColorPicker from './ColorPicker';
 
 export default function OnboardingModal() {
   const { user, setUser, setWishlist, wishlist } = useAppContext();
@@ -64,23 +66,32 @@ export default function OnboardingModal() {
                   <label className="text-[10px] uppercase text-muted tracking-widest ml-1 mb-1 block">Full Name</label>
                   <input type="text" className="w-full bg-surface border border-border p-3 rounded-xl outline-none focus:border-emerald text-sm" placeholder="John Doe" value={name} onChange={e => setName(e.target.value)} />
                </div>
-               <div className="flex gap-4">
-                 <div className="flex-1">
-                    <label className="text-[10px] uppercase text-muted tracking-widest ml-1 mb-1 block">Monthly Income</label>
-                    <div className="relative flex items-center">
-                      <DollarSign className="absolute left-3 w-4 h-4 text-muted" />
-                      <input type="number" className="w-full bg-surface border border-border p-3 pl-9 rounded-xl outline-none focus:border-emerald text-sm" value={income} onChange={e => setIncome(Number(e.target.value))} />
-                    </div>
-                 </div>
-                 <div className="w-1/3">
-                    <label className="text-[10px] uppercase text-muted tracking-widest ml-1 mb-1 block">Currency</label>
-                    <select className="w-full bg-surface border border-border p-3 rounded-xl outline-none focus:border-emerald text-sm" value={currency} onChange={e => setCurrency(e.target.value)}>
-                      <option value="USD">USD ($)</option>
-                      <option value="EUR">EUR (€)</option>
-                      <option value="INR">INR (₹)</option>
-                    </select>
-                 </div>
-               </div>
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                     <label className="text-[10px] uppercase text-muted tracking-widest ml-1 mb-1 block">Monthly Income</label>
+                     <div className="relative flex items-center">
+                        <span className="absolute left-3 w-4 h-4 text-muted font-bold text-sm">{getCurrencySymbol(currency)}</span>
+                        <input type="number" className="w-full bg-surface border border-border p-3 pl-9 rounded-xl outline-none focus:border-emerald text-sm" value={income} onChange={e => setIncome(Number(e.target.value))} />
+                     </div>
+                  </div>
+                  <div className="w-1/3">
+                     <label className="text-[10px] uppercase text-muted tracking-widest ml-1 mb-1 block">Currency</label>
+                     <select className="w-full bg-surface border border-border p-3 rounded-xl outline-none focus:border-emerald text-sm" value={currency} onChange={e => setCurrency(e.target.value)}>
+                       <option value="USD">USD ($)</option>
+                       <option value="EUR">EUR (€)</option>
+                       <option value="INR">INR (₹)</option>
+                       <option value="GBP">GBP (£)</option>
+                     </select>
+                  </div>
+                </div>
+
+                {/* Accent Color Picker */}
+                <div>
+                  <label className="text-[10px] uppercase text-muted tracking-widest ml-1 mb-2 block">
+                    🎨 Accent Color — pick your app theme
+                  </label>
+                  <ColorPicker compact />
+                </div>
              </div>
 
              <button onClick={nextStep} disabled={!name.trim() || income <= 0} className="w-full py-3 bg-emerald text-bg font-bold font-head rounded-xl disabled:opacity-50 mt-2 hover:bg-white transition-colors">

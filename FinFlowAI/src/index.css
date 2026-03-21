@@ -4,33 +4,92 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Default CSS Theme Variables (overridden dynamically by theme.js) ─────── */
+:root {
+  --color-accent:       hsl(78, 88%, 57%);
+  --color-accent-dim:   hsl(78, 88%, 30%);
+  --color-accent-glow:  hsl(78, 88%, 57%, 0.3);
+  --color-bg:           hsl(78, 18%, 5%);
+  --color-surface:      hsl(78, 15%, 8%);
+  --color-card:         hsl(78, 14%, 10%);
+  --color-border:       hsl(78, 20%, 100%, 0.08);
+  --color-text:         hsl(78, 10%, 94%);
+  --color-muted:        hsl(78, 12%, 50%);
+  --color-rose:         hsl(238, 85%, 65%);
+  --color-blue:         hsl(198, 75%, 70%);
+  --color-yellow:       hsl(118, 90%, 65%);
+  --color-h:            78;
+  --color-s:            88%;
+}
+
 @layer base {
   body {
-    @apply bg-bg text-text font-mono overflow-x-hidden antialiased;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    @apply font-mono overflow-x-hidden antialiased;
   }
 }
 
+/* ─── Dynamic Accent Overrides ───────────────────────────────────────────────
+   These allow the accent color (normally Tailwind 'emerald') to be swapped.
+   Use class 'accent-*' to reference these instead of fixed 'emerald-*' */
+
+/* The signature glow on buttons / highlights */
+.accent-glow {
+  box-shadow: 0 0 20px var(--color-accent-glow);
+}
+.accent-ring {
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+
+/* Dynamic accent bg / text / border utilities */
+.bg-accent   { background-color: var(--color-accent) !important; }
+.text-accent { color:            var(--color-accent) !important; }
+.border-accent { border-color:   var(--color-accent) !important; }
+.bg-accent\/10 { background-color: color-mix(in srgb, var(--color-accent) 10%, transparent) !important; }
+.bg-accent\/20 { background-color: color-mix(in srgb, var(--color-accent) 20%, transparent) !important; }
+.border-accent\/20 { border-color: color-mix(in srgb, var(--color-accent) 20%, transparent) !important; }
+.border-accent\/30 { border-color: color-mix(in srgb, var(--color-accent) 30%, transparent) !important; }
+.border-accent\/50 { border-color: color-mix(in srgb, var(--color-accent) 50%, transparent) !important; }
+
+/* Focus rings */
+.ring-accent { --tw-ring-color: var(--color-accent); }
+
+/* Dynamic theme class - overrides Tailwind's hard-coded emerald where needed */
+:root {
+  /* Make Tailwind's emerald class respond to the dynamic accent */
+  --tw-emerald-override: var(--color-accent);
+}
+
+/* ─── Grid Background ────────────────────────────────────────────────────────*/
 .bg-grid {
-  background-image: linear-gradient(rgba(255,255,255,0.07) 1px, transparent 1px),
-                    linear-gradient(90deg, rgba(255,255,255,0.07) 1px, transparent 1px);
+  background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
   background-size: 40px 40px;
 }
 
+/* ─── Glass effect ───────────────────────────────────────────────────────────*/
 .glass {
-  @apply bg-card/60 backdrop-blur-xl border border-border rounded-2xl;
+  background-color: color-mix(in srgb, var(--color-card) 60%, transparent);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
+/* ─── Themed Scrollbar ────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.1);
+  background: color-mix(in srgb, var(--color-accent) 25%, transparent);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255,255,255,0.2);
+  background: color-mix(in srgb, var(--color-accent) 40%, transparent);
+}
+
+/* ─── Sidebar active nav item ─────────────────────────────────────────────── */
+.nav-active {
+  background-color: var(--color-accent) !important;
+  color: var(--color-bg) !important;
 }

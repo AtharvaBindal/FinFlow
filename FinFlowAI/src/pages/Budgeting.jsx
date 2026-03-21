@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../context/AppContext';
 import { Edit2 } from 'lucide-react';
+import { formatCurrency, getCurrencySymbol } from '../utils/currency';
 
 const COLORS = {
   Food: '#c8f135',
@@ -25,7 +26,10 @@ const ICONS = {
 };
 
 export default function Budgeting() {
-  const { budgets, setBudgets, transactions } = useAppContext();
+  const { user, budgets, setBudgets, transactions } = useAppContext();
+  const currency = user.currency || 'USD';
+  const fmt = (n) => formatCurrency(n, currency);
+  const sym = getCurrencySymbol(currency);
   
   const currentMonth = new Date().toISOString().slice(0, 7);
   
@@ -45,7 +49,7 @@ export default function Budgeting() {
     });
 
   const handleEditLimit = (cat) => {
-    const newVal = window.prompt(`Set monthly budget for ${cat} ($):`, budgets[cat]);
+    const newVal = window.prompt(`Set monthly budget for ${cat} (${sym}):`, budgets[cat]);
     if (newVal !== null && !isNaN(newVal) && Number(newVal) > 0) {
       setBudgets(prev => ({
         ...prev,
@@ -107,8 +111,8 @@ export default function Budgeting() {
                
                <div className="flex justify-between items-center text-xs font-mono">
                   <div className="flex items-baseline gap-1">
-                    <span className="text-white font-bold">${spent.toLocaleString(undefined, {minimumFractionDigits:0, maximumFractionDigits:2})}</span>
-                    <span className="text-muted">of ${limit.toLocaleString()}</span>
+                    <span className="text-white font-bold">{fmt(spent)}</span>
+                    <span className="text-muted">of {fmt(limit)}</span>
                   </div>
                   <button 
                     onClick={() => handleEditLimit(cat)}

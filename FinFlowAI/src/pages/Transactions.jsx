@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ShieldCheck, Plus, Zap } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import { KEYWORDS } from '../utils/logic';
+import { formatCurrency } from '../utils/currency';
 
 const CATEGORIES = [
   { name: 'Food', icon: '🍔' },
@@ -15,7 +16,8 @@ const CATEGORIES = [
 ];
 
 export default function Transactions() {
-  const { transactions, globalMerchants, addTransaction } = useAppContext();
+  const { user, transactions, globalMerchants, addTransaction } = useAppContext();
+  const fmt = (n) => formatCurrency(n, user.currency || 'USD');
   
   const [desc, setDesc] = useState('');
   const [amt, setAmt] = useState('');
@@ -205,7 +207,7 @@ export default function Transactions() {
                           </div>
                       </div>
                       <div className="text-right flex flex-col gap-1">
-                         <div className="font-head font-bold text-lg text-white">${t.amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+                         <div className="font-head font-bold text-lg text-white">{fmt(t.amount)}</div>
                          <div className="text-[10px] text-muted font-mono">{t.date}</div>
                       </div>
                     </div>

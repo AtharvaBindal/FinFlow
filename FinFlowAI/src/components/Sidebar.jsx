@@ -1,12 +1,13 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Receipt, PieChart, Settings, Target, LogOut } from 'lucide-react';
+import { LayoutDashboard, Receipt, PieChart, Settings, Target, LogOut, Ghost } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 
 const navItems = [
   { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
   { name: 'Transactions', path: '/transactions', icon: Receipt },
   { name: 'Budgeting', path: '/budgeting', icon: PieChart },
+  { name: 'Vampires', path: '/subscriptions', icon: Ghost },
   { name: 'Settings', path: '/settings', icon: Settings },
 ];
 
@@ -40,8 +41,8 @@ export default function Sidebar() {
   return (
     <div className="glass w-full h-full flex flex-col pt-8 pb-6 px-4 shadow-2xl relative overflow-hidden">
       <div className="flex items-center gap-2 mb-10 px-2">
-        <div className="w-8 h-8 rounded-lg bg-emerald flex items-center justify-center font-head font-bold text-bg text-xl shadow-[0_0_10px_rgba(200,241,53,0.4)]">F</div>
-        <h1 className="font-head font-bold text-2xl tracking-tight text-white">Fin<span className="text-emerald">Flow</span></h1>
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center font-head font-bold text-bg text-xl" style={{ backgroundColor: 'var(--color-accent)', boxShadow: '0 0 10px var(--color-accent-glow)' }}>F</div>
+        <h1 className="font-head font-bold text-2xl tracking-tight text-white">Fin<span style={{ color: 'var(--color-accent)' }}>Flow</span></h1>
       </div>
 
       <nav className="flex-1 flex flex-col gap-2">
@@ -51,11 +52,14 @@ export default function Sidebar() {
             <NavLink
               key={item.path}
               to={item.path}
+              style={({ isActive }) => isActive ? {
+                backgroundColor: 'var(--color-accent)',
+                color: 'var(--color-bg)',
+                fontWeight: 600,
+              } : {}}
               className={({ isActive }) => 
                 `flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group ${
-                  isActive 
-                    ? 'bg-emerald text-bg font-semibold shadow-md' 
-                    : 'text-muted hover:text-white hover:bg-white/5'
+                  isActive ? 'shadow-md' : 'text-muted hover:text-white hover:bg-white/5'
                 }`
               }
             >
@@ -70,18 +74,18 @@ export default function Sidebar() {
       <div className="mt-6 mb-6 px-2">
         <div className="bg-surface border border-border rounded-2xl p-4 shadow-inner relative overflow-hidden">
           <div className="flex items-center gap-2 text-xs font-bold font-head tracking-widest uppercase text-white mb-3">
-             <Target className="w-4 h-4 text-emerald" />
+             <Target className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
              Dream Tracker
           </div>
           
           <div className="flex flex-col gap-1 mb-3">
              <span className="text-[10px] text-muted uppercase tracking-widest">{wishlist.goalName}</span>
-             <span className="text-lg font-head font-bold text-emerald">${wishlist.goalPrice.toLocaleString()}</span>
+             <span className="text-lg font-head font-bold" style={{ color: 'var(--color-accent)' }}>${wishlist.goalPrice.toLocaleString()}</span>
           </div>
 
           <div className="w-full bg-card h-1.5 rounded-full overflow-hidden mb-2">
              {/* Simulating progress bar for UI */}
-             <div className={`h-full ${onTrack ? 'bg-emerald' : 'bg-rose'}`} style={{width: onTrack ? '75%' : '40%'}}></div>
+             <div className={onTrack ? 'h-full' : 'h-full bg-rose'} style={onTrack ? { width: '75%', backgroundColor: 'var(--color-accent)' } : { width: '40%' }}></div>
           </div>
           
           <div className="text-[10px] text-muted flex justify-between">
@@ -96,12 +100,12 @@ export default function Sidebar() {
       <div className="mt-auto px-2">
         <div className="flex items-center justify-between px-2 py-2 rounded-xl border border-border bg-surface/50">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-emerald text-bg flex items-center justify-center font-bold tracking-widest text-xs uppercase">
+            <div className="w-8 h-8 rounded-full text-bg flex items-center justify-center font-bold tracking-widest text-xs uppercase" style={{ backgroundColor: 'var(--color-accent)' }}>
               {user.name ? user.name.slice(0,2) : 'AI'}
             </div>
             <div>
               <div className="text-sm font-semibold text-white tracking-wide truncate max-w-[100px]">{user.name || 'Hacker'}</div>
-              <div className="text-[10px] text-emerald uppercase tracking-widest">Pro Member</div>
+              <div className="text-[10px] uppercase tracking-widest" style={{ color: 'var(--color-accent)' }}>Pro Member</div>
             </div>
           </div>
           <button onClick={handleLogout} className="p-2 text-muted hover:text-rose hover:bg-rose/10 rounded-lg transition-colors" title="Logout / Switch Account">

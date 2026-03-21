@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { applyTheme } from '../utils/theme';
 
 const AppContext = createContext();
 
@@ -12,11 +13,17 @@ export function AppProvider({ children }) {
       name: '',
       email: '',
       currency: 'USD',
+      accentColor: '#c8f135',
       permissions: { sms: false, location: false, community: false }
     };
   });
 
   const getStorageKey = (key) => user.email ? `${key}_${user.email}` : key;
+
+  // Apply theme palette whenever accent color changes
+  useEffect(() => {
+    applyTheme(user.accentColor || '#c8f135');
+  }, [user.accentColor]);
 
   const [transactions, setTransactions] = useState([]);
   const [budgets, setBudgets] = useState({});
