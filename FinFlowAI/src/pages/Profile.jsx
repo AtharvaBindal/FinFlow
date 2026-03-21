@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../context/AppContext';
 import { User, Calendar, Mail, MapPin, Save, ShieldCheck } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { showToast } from '../components/ToastContainer';
 
 export default function Profile() {
   const { user, setUser } = useAppContext();
@@ -20,7 +20,7 @@ export default function Profile() {
   const handleSave = (e) => {
     e.preventDefault();
     setUser(prev => ({ ...prev, ...formData }));
-    toast.success('Profile updated successfully!', { icon: '✨' });
+    showToast('Profile updated successfully!', 'success');
   };
 
   return (
