@@ -27,8 +27,6 @@ function hexToHSL(hex) {
   return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
 }
 
-/** Clamp a number between min and max */
-const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
 
 /**
  * Generate a complete CSS variable palette from a hex accent color.
