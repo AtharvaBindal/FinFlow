@@ -15,7 +15,7 @@ export function AppProvider({ children }) {
       email: '',
       currency: 'USD',
       accentColor: '#a74ac9',
-      theme: 'light',
+      theme: 'dark',
       safeSpendOverride: 0, // 0 = auto-calculate, >0 = user-set daily limit
       permissions: { sms: false, location: false, community: false }
     };
@@ -25,7 +25,7 @@ export function AppProvider({ children }) {
 
   // Apply theme palette whenever accent color or theme mode changes
   useEffect(() => {
-    applyTheme(user.accentColor || '#a74ac9', user.theme === 'light');
+    applyTheme(user.accentColor || '#a74ac9', false);
   }, [user.accentColor, user.theme]);
 
   const [transactions, setTransactions] = useState([]);
