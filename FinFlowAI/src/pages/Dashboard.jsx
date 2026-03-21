@@ -105,7 +105,8 @@ export default function Dashboard() {
           
           {/* Video container with glowing mood border */}
           {(() => {
-            const mood = balancePercent < 50 ? 'sad' : balancePercent < 75 ? 'mid' : 'happy';
+            const teddyLeft = balance <= (wishlist.essentialBills + wishlist.goalPrice);
+            const mood = balancePercent <= 50 ? 'sad' : balancePercent <= 75 ? 'mid' : 'happy';
             const videoSrc = mood === 'happy' ? '/happy.mp4' : mood === 'mid' ? '/mid.mp4' : '/sad.mp4';
             const glowColor = mood === 'happy'
               ? { shadow: '0 0 25px rgba(200,241,53,0.4), 0 0 60px rgba(200,241,53,0.15)', border: 'var(--color-accent)', badge: 'var(--color-accent)' }
@@ -113,10 +114,21 @@ export default function Dashboard() {
               ? { shadow: '0 0 25px rgba(255,169,77,0.4), 0 0 60px rgba(255,169,77,0.15)', border: 'var(--color-yellow)', badge: 'var(--color-yellow)' }
               : { shadow: '0 0 25px rgba(255,107,107,0.4), 0 0 60px rgba(255,107,107,0.15)', border: 'var(--color-rose)', badge: 'var(--color-rose)' };
             
-            // Recompute shadow colors based on variables if needed, or simply let CSS vars handle it:
-            const shadowStyle = mood === 'happy' ? 'shadow-[0_0_25px_var(--color-accent-glow)]' :
+            const shadowStyle = teddyLeft ? 'shadow-[0_0_25px_var(--color-rose)]' :
+                                mood === 'happy' ? 'shadow-[0_0_25px_var(--color-accent-glow)]' :
                                 mood === 'mid' ? 'shadow-[0_0_25px_var(--color-yellow)]' :
                                 'shadow-[0_0_25px_var(--color-rose)]';
+
+            if (teddyLeft) {
+              return (
+                <div
+                  className={`relative w-36 h-36 rounded-2xl overflow-hidden z-10 transition-all duration-700 bg-[#0f0f13] flex items-center justify-center p-4 text-center ${shadowStyle}`}
+                  style={{ border: `2px solid var(--color-rose)` }}
+                >
+                  <span className="text-rose font-bold text-xs uppercase tracking-widest leading-relaxed font-head">The teddy has left.</span>
+                </div>
+              );
+            }
 
             return (
               <div
@@ -129,8 +141,9 @@ export default function Dashboard() {
           })()}
           
           <div className="mt-4 text-xs font-semibold uppercase tracking-wider text-center z-10 flex items-center gap-1">
-            {balancePercent >= 75 ? <><ShieldCheck className="w-4 h-4 text-accent" /> Rockstar Status</> : 
-             balancePercent >= 50 ? <><Activity className="w-4 h-4 text-yellow" /> On Track</> : 
+            {balance <= (wishlist.essentialBills + wishlist.goalPrice) ? <><AlertTriangle className="w-4 h-4 text-rose" /> Limit Reached</> :
+             balancePercent > 75 ? <><ShieldCheck className="w-4 h-4 text-accent" /> Rockstar Status</> : 
+             balancePercent > 50 ? <><Activity className="w-4 h-4 text-yellow" /> On Track</> : 
              <><AlertTriangle className="w-4 h-4 text-rose" /> Bleeding Money</>}
           </div>
         </div>
