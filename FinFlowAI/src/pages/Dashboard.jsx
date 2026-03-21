@@ -130,10 +130,7 @@ export default function Dashboard() {
                 style={{ boxShadow: glowColor.shadow, border: `2px solid ${glowColor.border}` }}
               >
                 <video key={mood} src={videoSrc} autoPlay loop muted playsInline className="w-full h-full object-cover" />
-                {/* Score badge overlay */}
-                <div className="absolute bottom-1.5 right-1.5 backdrop-blur-sm bg-black/60 px-2 py-0.5 rounded-lg">
-                  <span className="text-xs font-black font-head" style={{ color: glowColor.badge }}>{healthScore}</span>
-                </div>
+                {/* Score badge overlay has been removed per user request, keeping only the teddy */}
               </div>
             );
           })()}
@@ -224,6 +221,7 @@ export default function Dashboard() {
                <div className="bg-surface/40 p-3 rounded-xl border border-border">
                  <div className="text-[10px] uppercase tracking-widest text-muted mb-1">Total In (Mo)</div>
                  <div className="text-emerald font-bold font-mono">{fmt((wishlist.income || 0) + (monthDeposits || 0))}</div>
+                 {monthDeposits > 0 && <div className="text-[8px] text-emerald mt-1 font-bold">+ Recent Deposit Logged</div>}
                </div>
                <div className="bg-surface/40 p-3 rounded-xl border border-border">
                  <div className="text-[10px] uppercase tracking-widest text-muted mb-1">Total Out</div>
