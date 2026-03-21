@@ -54,7 +54,7 @@ export default function Dashboard() {
     setIsEditingLimit(false);
   };
 
-  const todaySpent = thisMonthTxs.filter(t => t.date === new Date().toISOString().slice(0, 10) && t.type !== 'deposit').reduce((a, b) => a + b.amount, 0);
+  const todaySpent = thisMonthTxs.filter(t => t.date === new Date().toISOString().slice(0, 10)).reduce((acc, t) => t.type === 'deposit' ? acc - t.amount : acc + t.amount, 0);
   const overspend = todaySpent - currentDailyLimit;
 
   // 3. Smart Text Insights (Daily Briefing)
