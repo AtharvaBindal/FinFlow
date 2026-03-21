@@ -11,7 +11,15 @@ export default function Profile() {
     email: user.email || '',
     birthday: user.birthday || '',
     location: user.location || '',
+    gender: user.gender || '',
   });
+
+  const calculateAge = (bday) => {
+    if (!bday) return null;
+    const diff = Date.now() - new Date(bday).getTime();
+    return Math.abs(new Date(diff).getUTCFullYear() - 1970);
+  };
+  const age = calculateAge(formData.birthday);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -86,8 +94,9 @@ export default function Profile() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label className="text-xs font-bold uppercase tracking-widest text-muted flex items-center gap-2">
-                <Calendar className="w-4 h-4" /> Birthday
+              <label className="text-xs font-bold uppercase tracking-widest text-muted flex items-center justify-between">
+                <span className="flex items-center gap-2"><Calendar className="w-4 h-4" /> Birthday</span>
+                {age !== null && !isNaN(age) && <span className="text-accent font-black tracking-widest">{age} YRS OLD</span>}
               </label>
               <input
                 type="date"
@@ -97,6 +106,24 @@ export default function Profile() {
                 className="bg-surface border border-border rounded-xl px-4 py-3 text-text focus:outline-none focus:border-accent transition-colors"
                 style={{ colorScheme: 'dark' }}
               />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-bold uppercase tracking-widest text-muted flex items-center gap-2">
+                <User className="w-4 h-4" /> Gender
+              </label>
+              <select
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                className="bg-surface border border-border rounded-xl px-4 py-3 text-text focus:outline-none focus:border-accent transition-colors appearance-none"
+              >
+                <option value="" disabled>Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Non-Binary">Non-Binary</option>
+                <option value="Prefer not to say">Prefer not to say</option>
+              </select>
             </div>
 
             <div className="flex flex-col gap-2">
