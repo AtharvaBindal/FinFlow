@@ -1,83 +1,95 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useAppContext } from '../context/AppContext';
 import MagicBox from '../components/MagicBox';
 import DemoModule from '../components/DemoModule';
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
-import { Sparkles, Activity, ShieldCheck, AlertTriangle } from 'lucide-react';
-import { formatCurrency, getCurrencySymbol } from '../utils/currency';
+import { Sparkles, Activity, ShieldCheck, AlertTriangle, Edit2, Check, Download } from 'lucide-react';
+import { formatCurrency } from '../utils/currency';
 
 const COLORS = ['#c8f135', '#6af0d8', '#ff6b6b', '#ffa94d', '#cc8cff', '#5bc0eb', '#f7d070', '#888888'];
 
 export default function Dashboard() {
-  const { user, transactions, budgets, wishlist } = useAppContext();
+  const { 
+    user, setUser, transactions, budgets, wishlist, 
+    balance, balancePercent, balanceWarning, monthSpent, monthDeposits, currentMonth 
+  } = useAppContext();
+  
   const currency = user.currency || 'USD';
-  const fmt = (n) => formatCurrency(n, currency);
+  const fmt = (n) => formatCurrency(Math.max(0, n), currency);
   
   // 1. Math & Data Logic
-  const currentMonth = new Date().toISOString().slice(0, 7);
-  const thisMonthTxs = transactions.filter(t => t.date.startsWith(currentMonth));
-  const monthSpent = thisMonthTxs.reduce((acc, t) => acc + t.amount, 0);
-
+  const thisMonthTxs = transactions.filter(t => t.date?.startsWith(currentMonth));
+  
   // Categorized Data for Donut
   const catTotals = {};
-  thisMonthTxs.forEach(t => {
+  thisMonthTxs.filter(t => t.type !== 'deposit').forEach(t => {
      catTotals[t.category] = (catTotals[t.category] || 0) + t.amount;
   });
   const donutData = Object.entries(catTotals).map(([name, value]) => ({ name, value })).filter(d => d.value > 0);
 
   const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
-  const dailyLimit = (wishlist.income - wishlist.essentialBills - wishlist.goalPrice) / daysInMonth;
   
-  const todaySpent = thisMonthTxs.filter(t => t.date === new Date().toISOString().slice(0, 10)).reduce((a, b) => a + b.amount, 0);
-  const overspend = todaySpent - dailyLimit;
+  // Safe Spend Limit — Auto-calculated vs User Override
+  const autoDailyLimit = (wishlist.income - wishlist.essentialBills - wishlist.goalPrice) / daysInMonth;
+  const currentDailyLimit = user.safeSpendOverride > 0 ? user.safeSpendOverride : autoDailyLimit;
+  
+  const [isEditingLimit, setIsEditingLimit] = useState(false);
+  const [tempLimit, setTempLimit] = useState(currentDailyLimit.toString());
+
+  const handleSaveLimit = () => {
+    const val = Number(tempLimit);
+    setUser(prev => ({ ...prev, safeSpendOverride: val }));
+    setIsEditingLimit(false);
+  };
+
+  const todaySpent = thisMonthTxs.filter(t => t.date === new Date().toISOString().slice(0, 10) && t.type !== 'deposit').reduce((a, b) => a + b.amount, 0);
+  const overspend = todaySpent - currentDailyLimit;
 
   // 2. Financial Health Score Logic (starts at 700, max 850, min 300)
   const healthScore = useMemo(() => {
-    let score = 700;
-    // Add points if month spending is less than expected pace
-    const expectedMonthPace = dailyLimit * new Date().getDate();
-    if (monthSpent < expectedMonthPace) score += 40;
-    else if (monthSpent > expectedMonthPace + 500) score -= 50;
-
-    // Daily safe spend check
-    if (overspend < 0) score += 15;
-    else if (overspend > 50) score -= 25;
+    // Base score relies on how much of the month's balance remains vs how far into the month we are
+    const todayNum = new Date().getDate();
+    const monthPacePercent = (todayNum / daysInMonth) * 100;
     
-    // Bounds
-    return Math.min(Math.max(Math.round(score), 300), 850);
-  }, [monthSpent, dailyLimit, overspend]);
+    // Ideal balance remaining % vs actual balance remaining %
+    const idealBalancePercent = 100 - monthPacePercent; 
+    let score = 700 + ((balancePercent - idealBalancePercent) * 2.5);
 
-  const scoreColor = healthScore >= 750 ? 'text-emerald border-emerald shadow-[0_0_15px_rgba(200,241,53,0.3)]' : 
-                     healthScore >= 600 ? 'text-yellow border-yellow shadow-[0_0_15px_rgba(255,169,77,0.3)]' : 
-                     'text-rose border-rose shadow-[0_0_15px_rgba(255,107,107,0.3)]';
+    // Punish daily overspending heavily
+    if (overspend > 0) score -= Math.min(overspend * 0.5, 100); 
+    else score += 15;
+
+    // Hard punishment for critical low balance
+    if (balancePercent < 15) score -= 150;
+
+    return Math.min(Math.max(Math.round(score), 300), 850);
+  }, [balancePercent, overspend, daysInMonth]);
 
   // 3. Smart Text Insights (Daily Briefing)
   const generateInsight = () => {
     if (transactions.length === 0) return "Welcome to FinFlow! Add your first transaction to get personalized insights.";
-    
-    // Check if food spending is unusually high
-    if (catTotals['Food'] > budgets['Food'] * 0.8) {
-      return "Gentle reminder: You're approaching your Food budget limits. Maybe skip the cafe tomorrow to stay on track for your goal!";
-    }
-    
-    if (overspend > 0) {
-      return `We went ${overspend > 50 ? 'significantly ' : ''}over the daily safe limit today, but you're still doing great overall. Reel it in tomorrow!`;
-    }
-
-    if (monthSpent < (dailyLimit * new Date().getDate())) {
-      return `You're crushing it! You are currently under-budget for the week. That's more money saved toward your ${wishlist.goalName}!`;
-    }
-
+    if (balanceWarning?.level === 'critical') return "CRITICAL ALERT: Your balance is almost depleted! Immediate spending freeze strongly recommended.";
+    if (catTotals['Food'] > budgets['Food'] * 0.8) return "Gentle reminder: You're approaching your Food budget limits. Maybe skip the cafe tomorrow!";
+    if (overspend > 0) return `We went ${overspend > 50 ? 'significantly ' : ''}over the daily safe limit today. Reel it in tomorrow!`;
+    if (balancePercent > (100 - (new Date().getDate() / daysInMonth * 100))) return `You're crushing it! You have more balance remaining than expected for this time of month.`;
     return "You're spending exactly at a healthy pace. Keep up the good work!";
   };
 
   // 4. Wishlist Progress Bar Math
-  const totalSavedSoFar = Math.max(0, (wishlist.income - wishlist.essentialBills - monthSpent));
-  const goalProgressPercent = Math.min((totalSavedSoFar / wishlist.goalPrice) * 100, 100).toFixed(1);
+  const goalProgressPercent = Math.min((balance / wishlist.goalPrice) * 100, 100).toFixed(1);
 
   return (
     <div className="w-full flex flex-col gap-6 animate-in fade-in duration-500 pb-20">
       
+      {/* Dynamic Balance Warning Banner */}
+      {balanceWarning && (
+        <div style={{ backgroundColor: balanceWarning.color + '15', borderColor: balanceWarning.color + '40', color: balanceWarning.color }} 
+             className="w-full p-4 rounded-xl border flex items-center gap-3 animate-in slide-in-from-top-4 shadow-sm">
+          <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+          <p className="text-sm font-bold tracking-wide">{balanceWarning.label}</p>
+        </div>
+      )}
+
       {/* Header */}
       <header className="flex items-center justify-between">
         <div>
@@ -97,21 +109,33 @@ export default function Dashboard() {
       {/* Top Section: Health Score & Smart Insights */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         
-        {/* Financial Health Score Ring */}
+        {/* Financial Health — Video Mood Indicator */}
         <div className="glass p-6 rounded-2xl flex flex-col items-center justify-center relative overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent z-0"></div>
           <h3 className="text-xs uppercase tracking-widest text-muted font-bold mb-4 z-10">Financial Health</h3>
           
-          <div className={`relative w-32 h-32 rounded-full border-[8px] flex items-center justify-center transition-all duration-1000 ${scoreColor} z-10`}>
-            {/* Confetti Animation Trigger condition placeholder */}
-            <div className="flex flex-col items-center">
-          <span className="text-4xl font-head font-black tracking-tighter">{healthScore}</span>
-              <span className="text-[10px] uppercase tracking-widest text-muted mt-1">Score</span>
-            </div>
-            
-            {/* Dynamic decorative ring particles */}
-            <div className="absolute -inset-4 border border-dashed border-white/10 rounded-full animate-[spin_20s_linear_infinite]"></div>
-          </div>
+          {/* Video container with glowing mood border */}
+          {(() => {
+            const mood = healthScore >= 750 ? 'happy' : healthScore >= 600 ? 'mid' : 'sad';
+            const videoSrc = mood === 'happy' ? '/happy.mp4' : mood === 'mid' ? '/mid.mp4' : '/sad.mp4';
+            const glowColor = mood === 'happy'
+              ? { shadow: '0 0 25px rgba(200,241,53,0.4), 0 0 60px rgba(200,241,53,0.15)', border: 'rgba(200,241,53,0.5)', badge: '#c8f135' }
+              : mood === 'mid'
+              ? { shadow: '0 0 25px rgba(255,169,77,0.4), 0 0 60px rgba(255,169,77,0.15)', border: 'rgba(255,169,77,0.5)', badge: '#ffa94d' }
+              : { shadow: '0 0 25px rgba(255,107,107,0.4), 0 0 60px rgba(255,107,107,0.15)', border: 'rgba(255,107,107,0.5)', badge: '#ff6b6b' };
+            return (
+              <div
+                className="relative w-36 h-36 rounded-2xl overflow-hidden z-10 transition-all duration-700"
+                style={{ boxShadow: glowColor.shadow, border: `2px solid ${glowColor.border}` }}
+              >
+                <video key={mood} src={videoSrc} autoPlay loop muted playsInline className="w-full h-full object-cover" />
+                {/* Score badge overlay */}
+                <div className="absolute bottom-1.5 right-1.5 backdrop-blur-sm bg-black/60 px-2 py-0.5 rounded-lg">
+                  <span className="text-xs font-black font-head" style={{ color: glowColor.badge }}>{healthScore}</span>
+                </div>
+              </div>
+            );
+          })()}
           
           <div className="mt-4 text-xs font-semibold uppercase tracking-wider text-center z-10 flex items-center gap-1">
             {healthScore >= 750 ? <><ShieldCheck className="w-4 h-4 text-emerald" /> Rockstar Status</> : 
@@ -121,7 +145,7 @@ export default function Dashboard() {
         </div>
 
         {/* Daily Briefing Card */}
-        <div className="md:col-span-2 glass p-6 rounded-2xl flex flex-col justify-center relative shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] border-emerald/20">
+        <div className="md:col-span-2 glass p-6 rounded-2xl flex flex-col justify-center relative border-emerald/20">
           <div className="absolute top-0 right-0 p-4 opacity-50"><Sparkles className="w-16 h-16 text-emerald/10" /></div>
           
           <div className="flex items-center gap-2 mb-3">
@@ -136,10 +160,33 @@ export default function Dashboard() {
           </p>
 
           <div className="mt-5 flex gap-4">
-             <div className="bg-surface/50 border border-border px-4 py-2 rounded-xl">
-               <div className="text-[10px] uppercase tracking-widest text-muted">Safe Spend Limit</div>
-               <div className="text-lg font-bold text-emerald">{fmt(Math.max(0, dailyLimit))} <span className="text-xs text-muted font-normal">/ day</span></div>
+             <div className="bg-surface/50 border border-border px-4 py-2 rounded-xl group relative">
+               <div className="text-[10px] uppercase tracking-widest text-muted flex items-center justify-between">
+                 Safe Spend Limit
+                 {user.safeSpendOverride > 0 && <span className="text-[8px] bg-accent/20 text-accent px-1 py-0.5 rounded ml-2">OVERRIDE</span>}
+               </div>
+               
+               {isEditingLimit ? (
+                 <div className="flex items-center gap-2 mt-1">
+                   <span className="text-muted text-sm">{getCurrencySymbol(currency)}</span>
+                   <input 
+                     type="number" 
+                     value={tempLimit} 
+                     onChange={(e) => setTempLimit(e.target.value)}
+                     className="bg-transparent border-b border-accent outline-none w-16 text-white font-bold"
+                     autoFocus
+                     onKeyDown={(e) => e.key === 'Enter' && handleSaveLimit()}
+                   />
+                   <button onClick={handleSaveLimit} className="text-accent hover:text-white"><Check className="w-4 h-4" /></button>
+                 </div>
+               ) : (
+                 <div className="text-lg font-bold text-emerald flex items-center gap-2 group-hover:cursor-pointer" onClick={() => { setTempLimit(currentDailyLimit.toString()); setIsEditingLimit(true); }}>
+                   {fmt(currentDailyLimit)} <span className="text-xs text-muted font-normal">/ day</span>
+                   <Edit2 className="w-3 h-3 text-muted group-hover:text-accent opacity-0 group-hover:opacity-100 transition-opacity" />
+                 </div>
+               )}
              </div>
+
              <div className="bg-surface/50 border border-border px-4 py-2 rounded-xl">
                <div className="text-[10px] uppercase tracking-widest text-muted">Spent Today</div>
                <div className={`text-lg font-bold ${overspend > 0 ? 'text-rose' : 'text-white'}`}>{fmt(todaySpent)}</div>
@@ -151,36 +198,67 @@ export default function Dashboard() {
       {/* Advanced Visualizations Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-2">
         
-        {/* Wishlist Loading Bar */}
-        <div className="glass p-6 rounded-2xl flex flex-col gap-4 border-t-2 border-t-emerald/30 relative overflow-hidden">
-          <div className="flex justify-between items-end">
-            <div>
-              <h3 className="text-sm font-bold font-head uppercase tracking-wider text-emerald">Goal Progression</h3>
-              <p className="text-xs text-muted mt-1">Funding: {wishlist.goalName}</p>
+        {/* Balance & Export Summary Card */}
+        <div className="glass p-6 rounded-2xl flex flex-col justify-between border-t-2 border-t-blue/30 relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-4 opacity-50"><ShieldCheck className="w-24 h-24 text-blue/5" /></div>
+          
+          <div>
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h3 className="text-sm font-bold font-head uppercase tracking-wider text-blue">Account Balance</h3>
+                <p className="text-xs text-muted mt-1">Available Funds</p>
+              </div>
+              <div className="text-right">
+                <div className="text-3xl font-black font-head tracking-tighter text-white">{fmt(balance)}</div>
+                <div className="flex items-center gap-1.5 justify-end mt-1">
+                  <div className={`w-2 h-2 rounded-full`} style={{ backgroundColor: balanceWarning ? balanceWarning.color : '#6af0d8' }}></div>
+                  <span className="text-[10px] text-muted tracking-widest uppercase font-bold text-right leading-tight">
+                    {Math.max(0, balancePercent).toFixed(0)}% Left
+                  </span>
+                </div>
+              </div>
             </div>
-            <div className="text-right">
-            <div className="text-2xl font-black font-head tracking-tighter text-white">{goalProgressPercent}%</div>
-              <div className="text-[10px] text-muted uppercase tracking-widest">Funded</div>
+
+            <div className="grid grid-cols-2 gap-4 mt-6">
+               <div className="bg-surface/40 p-3 rounded-xl border border-border">
+                 <div className="text-[10px] uppercase tracking-widest text-muted mb-1">Total In (Mo)</div>
+                 <div className="text-emerald font-bold font-mono">{fmt((wishlist.income || 0) + (monthDeposits || 0))}</div>
+               </div>
+               <div className="bg-surface/40 p-3 rounded-xl border border-border">
+                 <div className="text-[10px] uppercase tracking-widest text-muted mb-1">Total Out</div>
+                 <div className="text-rose font-bold font-mono">{fmt(monthSpent || 0)}</div>
+               </div>
             </div>
           </div>
 
-          {/* Premium Loading Bar */}
-          <div className="w-full h-8 bg-surface border border-border rounded-full p-1 relative overflow-hidden shadow-inner">
-             <div 
-               className="h-full bg-emerald rounded-full relative overflow-hidden transition-all duration-1000 ease-out flex items-center justify-end px-2"
-               style={{ width: `${Math.max(5, goalProgressPercent)}%` }}
-             >
-                {/* Shine effect */}
-                <div className="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-full"></div>
-                {/* Striped texture */}
-                <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, #000 10px, #000 20px)'}}></div>
-             </div>
-          </div>
-          
-          <div className="flex justify-between text-[10px] uppercase tracking-widest font-semibold text-muted">
-             <span>{fmt(totalSavedSoFar)} Saved</span>
-             <span>Target: {fmt(wishlist.goalPrice)}</span>
-          </div>
+          {/* Export Button */}
+          <button 
+            onClick={() => {
+              const csvData = [
+                ['Date', 'Merchant', 'Category', 'Amount', 'Type'],
+                ...transactions.map(t => [
+                  t.date, 
+                  `"${t.merchant.replace(/"/g, '""')}"`, 
+                  t.category, 
+                  t.amount, 
+                  t.type || 'expense'
+                ])
+              ].map(e => e.join(",")).join("\n");
+              
+              const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.setAttribute('href', url);
+              a.setAttribute('download', `FinFlow_${currentMonth}_Export.csv`);
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+            }}
+            className="w-full mt-6 bg-blue/10 hover:bg-blue/20 border border-blue/30 text-blue text-xs font-bold uppercase tracking-widest py-3 rounded-xl transition-colors flex items-center justify-center gap-2 group cursor-pointer"
+          >
+             <Download className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
+             Export Data to Excel
+          </button>
         </div>
 
         {/* Category Donut (Fixed Responsive Container Issue by using absolute sizing wrapper) */}

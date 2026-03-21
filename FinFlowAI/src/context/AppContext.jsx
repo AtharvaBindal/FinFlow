@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { applyTheme } from '../utils/theme';
 
 const AppContext = createContext();
@@ -14,6 +14,7 @@ export function AppProvider({ children }) {
       email: '',
       currency: 'USD',
       accentColor: '#c8f135',
+      safeSpendOverride: 0, // 0 = auto-calculate, >0 = user-set daily limit
       permissions: { sms: false, location: false, community: false }
     };
   });
@@ -70,9 +71,34 @@ export function AppProvider({ children }) {
     localStorage.setItem('finflow_global_merch', JSON.stringify(globalMerchants));
   }, [user, transactions, budgets, wishlist, globalMerchants]);
 
+  // ─── Balance & Spending Calculations ───────────────────────────────────
+  const currentMonth = new Date().toISOString().slice(0, 7);
+  
+  const { monthSpent, monthDeposits, balance, balancePercent } = useMemo(() => {
+    const thisMonthTxs = transactions.filter(t => t.date?.startsWith(currentMonth));
+    const spent = thisMonthTxs.filter(t => t.type !== 'deposit').reduce((a, t) => a + t.amount, 0);
+    const deposits = thisMonthTxs.filter(t => t.type === 'deposit').reduce((a, t) => a + t.amount, 0);
+    const bal = Math.max(0, wishlist.income + deposits - spent);
+    const pct = wishlist.income > 0 ? (bal / wishlist.income) * 100 : 100;
+    return { monthSpent: spent, monthDeposits: deposits, balance: bal, balancePercent: pct };
+  }, [transactions, wishlist.income, currentMonth]);
+
+  // ─── Balance Warning Tier ──────────────────────────────────────────────
+  const balanceWarning = useMemo(() => {
+    if (balancePercent <= 10)  return { level: 'critical', label: '⚠️ CRITICAL — Under 10% balance left!', color: '#ff3b3b' };
+    if (balancePercent <= 25)  return { level: 'danger',   label: '🔴 Danger — 25% balance remaining',    color: '#ff6b6b' };
+    if (balancePercent <= 50)  return { level: 'warning',  label: '🟡 Warning — 50% balance used up',     color: '#ffa94d' };
+    if (balancePercent <= 75)  return { level: 'caution',  label: '🟢 Caution — 75% spent, stay mindful', color: '#6af0d8' };
+    return null; // >75% remaining = healthy, no warning
+  }, [balancePercent]);
+
   // Methods
   const addTransaction = (t) => {
-    const newTx = { id: Date.now(), ...t };
+    // Balance guard — prevent expense exceeding remaining balance
+    if (t.type !== 'deposit' && t.amount > balance) {
+      return { blocked: true, reason: `Insufficient balance. You have ${balance.toFixed(2)} remaining.` };
+    }
+    const newTx = { id: Date.now(), type: 'expense', ...t };
     setTransactions(prev => [newTx, ...prev]);
     return newTx;
   };
@@ -82,18 +108,15 @@ export function AppProvider({ children }) {
   };
   
   const processGlobalTransaction = (merchant, category) => {
-    if (!user.permissions.community) return; // Opt-in strictly respected
-
+    if (!user.permissions.community) return;
     const normMerchant = merchant.toLowerCase().trim();
     setGlobalMerchants(prev => {
       const existing = prev[normMerchant] || { transactionCount: 0, communityCategory: null, userTags: {} };
-      const newCount = existing.transactionCount + 1;
-      
       return {
         ...prev,
         [normMerchant]: {
           ...existing,
-          transactionCount: newCount,
+          transactionCount: existing.transactionCount + 1,
           communityCategory: existing.communityCategory || category 
         }
       };
@@ -103,10 +126,12 @@ export function AppProvider({ children }) {
   return (
     <AppContext.Provider value={{
       user, setUser,
-      transactions, addTransaction, deleteTransaction,
+      transactions, addTransaction, deleteTransaction, setTransactions,
       budgets, setBudgets,
       wishlist, setWishlist,
-      globalMerchants, processGlobalTransaction
+      globalMerchants, processGlobalTransaction,
+      monthSpent, monthDeposits, balance, balancePercent, balanceWarning,
+      currentMonth
     }}>
       {children}
     </AppContext.Provider>
