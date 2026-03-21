@@ -3,17 +3,7 @@ import { useAppContext } from '../context/AppContext';
 import { Edit2 } from 'lucide-react';
 import { formatCurrency, getCurrencySymbol } from '../utils/currency';
 
-const COLORS = {
-  Food: '#c8f135',
-  Transport: '#6af0d8',
-  Shopping: '#ffa94d',
-  Health: '#ff6b6b',
-  Entertainment: '#cc8cff',
-  Bills: '#5bc0eb',
-  Education: '#f7d070',
-  Other: '#888888',
-};
-
+// Colors managed via CSS Theme Variables
 const ICONS = {
   Food: '🍔',
   Transport: '🚗',
@@ -70,21 +60,21 @@ export default function Budgeting() {
           const spent = spentByCategory[cat] || 0;
           const pct = limit > 0 ? Math.min((spent / limit) * 100, 100) : 0;
           
-          let alertColor = COLORS[cat] || COLORS.Other;
-          let badgeText = '🟢 OK';
-          let badgeBg = '#c8f13522';
-          let badgeColor = '#c8f135';
+          let alertColor = 'var(--color-accent)';
+          let badgeText = 'OK';
+          let badgeBg = 'rgba(167, 74, 201, 0.15)'; // Soft accent bg
+          let badgeColor = 'var(--color-accent)';
 
           if (pct >= 100) {
-            alertColor = '#ff6b6b';
-            badgeText = '🔴 Over';
-            badgeBg = '#ff6b6b22';
-            badgeColor = '#ff6b6b';
+            alertColor = 'var(--color-rose)';
+            badgeText = 'OVER BUDGET';
+            badgeBg = 'rgba(255, 107, 107, 0.15)';
+            badgeColor = 'var(--color-rose)';
           } else if (pct >= 80) {
-            alertColor = '#ffa94d';
-            badgeText = '🟡 High';
-            badgeBg = '#ffa94d22';
-            badgeColor = '#ffa94d';
+            alertColor = 'var(--color-accent)';
+            badgeText = 'WARNING';
+            badgeBg = 'rgba(167, 74, 201, 0.25)';
+            badgeColor = 'var(--color-accent)';
           }
 
           return (
