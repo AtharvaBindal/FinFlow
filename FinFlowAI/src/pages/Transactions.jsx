@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldCheck, Plus, Zap } from 'lucide-react';
+import { ShieldCheck, Plus, Zap, Edit2 } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import { KEYWORDS } from '../utils/logic';
 import { formatCurrency } from '../utils/currency';
@@ -16,8 +16,11 @@ const CATEGORIES = [
 ];
 
 export default function Transactions() {
-  const { user, transactions, globalMerchants, addTransaction } = useAppContext();
+  const { user, transactions, auditLogs, globalMerchants, addTransaction, editTransaction } = useAppContext();
   const fmt = (n) => formatCurrency(n, user.currency || 'USD');
+  
+  const [editingId, setEditingId] = useState(null);
+  const [showAuditLogs, setShowAuditLogs] = useState(false);
   
   const [type, setType] = useState('expense');
   const [desc, setDesc] = useState('');
@@ -49,21 +52,42 @@ export default function Transactions() {
   const handleAdd = () => {
     if (!desc || !amt || Number(amt) <= 0) return alert('Please fill description and valid amount');
     if (!date) return alert('Please pick a date');
-    const result = addTransaction({
-      merchant: desc,
-      amount: Number(amt),
-      category: type === 'deposit' ? 'Income' : (cat || 'Other'),
-      date: date,
-      type: type
-    });
     
-    if (result && result.blocked) {
-      return alert(result.reason);
+    if (editingId) {
+       editTransaction(editingId, {
+         merchant: desc,
+         amount: Number(amt),
+         category: type === 'deposit' ? 'Income' : (cat || 'Other'),
+         date: date,
+         type: type
+       });
+       setEditingId(null);
+    } else {
+       const result = addTransaction({
+         merchant: desc,
+         amount: Number(amt),
+         category: type === 'deposit' ? 'Income' : (cat || 'Other'),
+         date: date,
+         type: type
+       });
+       if (result && result.blocked) {
+         return alert(result.reason);
+       }
     }
     
     setDesc('');
     setAmt('');
     setCat('');
+  };
+  
+  const handleEditClick = (t) => {
+     setEditingId(t.id);
+     setType(t.type || 'expense');
+     setDesc(t.merchant);
+     setAmt(t.amount.toString());
+     setCat(t.category);
+     setDate(t.date);
+     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const addSimulated = () => {
@@ -94,9 +118,11 @@ export default function Transactions() {
       </header>
       
       {/* New Form */}
-      <div className="glass p-5 rounded-2xl flex flex-col gap-4">
+      <div className={`glass p-5 flex flex-col gap-4 transition-all duration-300 ${editingId ? 'ring-2 ring-accent rounded-2xl' : 'rounded-2xl'}`}>
         <div className="flex justify-between items-center pr-2">
-          <h2 className="text-xs text-muted tracking-widest uppercase font-bold">New Entry</h2>
+          <h2 className={`text-xs tracking-widest uppercase font-bold ${editingId ? 'text-accent' : 'text-muted'}`}>
+             {editingId ? 'Editing Transaction' : 'New Entry'}
+          </h2>
           <div className="flex bg-surface p-1 rounded-lg border border-border">
              <button 
                onClick={() => setType('expense')} 
@@ -184,17 +210,51 @@ export default function Transactions() {
              <Zap className="w-3.5 h-3.5" /> Simulate Sample Data
           </button>
           <button onClick={handleAdd} className="bg-accent text-black font-head font-bold text-sm px-6 py-2.5 rounded-lg hover:bg-[#d4fc40] transition-colors flex items-center gap-2 tracking-wide">
-             Add {type === 'deposit' ? 'Deposit / Income' : 'Expense'} <Plus className="w-4 h-4" />
+             {editingId ? 'Update Log' : `Add ${type === 'deposit' ? 'Deposit / Income' : 'Expense'}`} <Plus className="w-4 h-4" />
           </button>
         </div>
       </div>
 
       <div className="flex-1 glass rounded-2xl overflow-hidden flex flex-col shadow-inner">
-        <div className="p-5 border-b border-border/50 bg-[#ffffff02]">
+        <div className="p-5 border-b border-border/50 bg-[#ffffff02] flex justify-between items-center">
             <h2 className="text-xs text-muted tracking-widest uppercase font-bold">All Transactions</h2>
+            <button 
+              onClick={() => setShowAuditLogs(!showAuditLogs)}
+              className={`text-[10px] uppercase font-bold tracking-widest px-3 py-1.5 rounded disabled:opacity-50 ${showAuditLogs ? 'bg-rose/20 text-rose' : 'bg-surface border border-border text-muted hover:text-white'}`}
+            >
+              {showAuditLogs ? 'Hide Audit Logs' : 'View Edit History'}
+            </button>
         </div>
         <div className="overflow-y-auto p-4 md:p-6 flex-1">
-            {transactions.length === 0 ? (
+            {showAuditLogs ? (
+              <div className="flex flex-col gap-4">
+                <div className="bg-rose/10 border border-rose/30 p-3 rounded-xl mb-2 text-rose text-xs flex items-center gap-2 font-mono">
+                  <ShieldCheck className="w-4 h-4" /> IMMUTABLE AUDIT TRAIL — THESE LOGS CANNOT BE DELETED
+                </div>
+                {auditLogs.length === 0 ? (
+                   <p className="text-muted text-sm text-center py-10 font-mono">No edits have been made yet.</p>
+                ) : (
+                  auditLogs.map(log => (
+                    <div key={log.id} className="p-4 bg-surface rounded-xl border border-border flex flex-col gap-2 font-mono text-xs">
+                       <div className="flex justify-between text-muted border-b border-border/50 pb-2">
+                         <span>✏️ Tx ID: {log.txId}</span>
+                         <span>{new Date(log.timestamp).toLocaleString()}</span>
+                       </div>
+                       <div className="grid grid-cols-2 gap-4 mt-1">
+                          <div>
+                            <span className="text-rose opacity-80 uppercase tracking-widest text-[9px] block mb-1">Old Data</span>
+                            <div className="text-muted/80">{log.oldData.merchant} • {fmt(log.oldData.amount)} • {log.oldData.category}</div>
+                          </div>
+                          <div>
+                            <span className="text-emerald opacity-80 uppercase tracking-widest text-[9px] block mb-1">New Data</span>
+                            <div className="text-white">{log.newData.merchant} • {fmt(log.newData.amount)} • {log.newData.category}</div>
+                          </div>
+                       </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            ) : transactions.length === 0 ? (
                <div className="flex-1 flex flex-col items-center justify-center text-muted border border-dashed border-border rounded-xl p-8 text-center min-h-[200px]">
                   <ShieldCheck className="w-12 h-12 mb-4 opacity-20" />
                   <p className="text-sm">No transactions yet.</p>
@@ -224,16 +284,25 @@ export default function Transactions() {
                              <div className="text-xs text-muted flex items-center gap-2 font-mono">
                                <span>{t.category}</span>
                                {verified && t.category === globalMerchants[t.merchant.toLowerCase()]?.communityCategory && (
-                                 <span className="italic text-[10px] opacity-70 border-l border-border pl-2">Auto-tagged via consensus</span>
+                                 <span className="italic text-[10px] opacity-70 border-l border-border pl-2">Auto-tagged</span>
                                )}
                              </div>
                           </div>
                       </div>
-                      <div className="text-right flex flex-col gap-1">
-                         <div className={`font-head font-bold text-lg ${t.type === 'deposit' ? 'text-emerald' : 'text-white'}`}>
-                           {t.type === 'deposit' ? '+' : '-'}{fmt(t.amount)}
+                      <div className="flex items-center gap-4">
+                         <div className="text-right flex flex-col gap-1">
+                            <div className={`font-head font-bold text-lg ${t.type === 'deposit' ? 'text-emerald' : 'text-white'}`}>
+                              {t.type === 'deposit' ? '+' : '-'}{fmt(t.amount)}
+                            </div>
+                            <div className="text-[10px] text-muted font-mono">{t.date}</div>
                          </div>
-                         <div className="text-[10px] text-muted font-mono">{t.date}</div>
+                         <button 
+                           onClick={() => handleEditClick(t)} 
+                           className="text-muted hover:text-white p-2 border border-border hover:border-accent rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                           title="Edit Transaction"
+                         >
+                            <Edit2 className="w-4 h-4" />
+                         </button>
                       </div>
                     </div>
                   );

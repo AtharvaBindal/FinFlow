@@ -27,6 +27,7 @@ export function AppProvider({ children }) {
   }, [user.accentColor]);
 
   const [transactions, setTransactions] = useState([]);
+  const [auditLogs, setAuditLogs] = useState([]);
   const [budgets, setBudgets] = useState({});
   const [wishlist, setWishlist] = useState({ income: 50000, goalName: 'Vacation', goalPrice: 20000, essentialBills: 15000 });
 
@@ -35,6 +36,9 @@ export function AppProvider({ children }) {
     if (user.email) {
       const savedTx = localStorage.getItem(getStorageKey('finflow_transactions'));
       setTransactions(savedTx ? JSON.parse(savedTx) : []);
+      
+      const savedLogs = localStorage.getItem(getStorageKey('finflow_audit_logs'));
+      setAuditLogs(savedLogs ? JSON.parse(savedLogs) : []);
       
       const savedBudgets = localStorage.getItem(getStorageKey('finflow_budgets'));
       setBudgets(savedBudgets ? JSON.parse(savedBudgets) : {
@@ -65,11 +69,12 @@ export function AppProvider({ children }) {
     localStorage.setItem('finflow_user', JSON.stringify(user));
     if (user.email) {
       localStorage.setItem(`finflow_transactions_${user.email}`, JSON.stringify(transactions));
+      localStorage.setItem(`finflow_audit_logs_${user.email}`, JSON.stringify(auditLogs));
       localStorage.setItem(`finflow_budgets_${user.email}`, JSON.stringify(budgets));
       localStorage.setItem(`finflow_wishlist_${user.email}`, JSON.stringify(wishlist));
     }
     localStorage.setItem('finflow_global_merch', JSON.stringify(globalMerchants));
-  }, [user, transactions, budgets, wishlist, globalMerchants]);
+  }, [user, transactions, auditLogs, budgets, wishlist, globalMerchants]);
 
   // ─── Balance & Spending Calculations ───────────────────────────────────
   const currentMonth = new Date().toISOString().slice(0, 7);
@@ -103,6 +108,38 @@ export function AppProvider({ children }) {
     return newTx;
   };
   
+  const editTransaction = (id, updatedFields) => {
+    let oldTx = null;
+    let newTx = null;
+
+    setTransactions(prev => prev.map(t => {
+      if (t.id === id) {
+        oldTx = { ...t };
+        newTx = { ...t, ...updatedFields };
+        return newTx;
+      }
+      return t;
+    }));
+
+    // If transaction found and updated, log the audit
+    setTimeout(() => {
+        if (oldTx && newTx) {
+        setAuditLogs(prev => [
+            {
+            id: Date.now(),
+            txId: id,
+            timestamp: new Date().toISOString(),
+            oldData: oldTx,
+            newData: newTx
+            },
+            ...prev
+        ]);
+        }
+    }, 0);
+
+    return newTx;
+  };
+  
   const deleteTransaction = (id) => {
     setTransactions(prev => prev.filter(t => t.id !== id));
   };
@@ -126,7 +163,8 @@ export function AppProvider({ children }) {
   return (
     <AppContext.Provider value={{
       user, setUser,
-      transactions, addTransaction, deleteTransaction, setTransactions,
+      transactions, addTransaction, editTransaction, deleteTransaction, setTransactions,
+      auditLogs,
       budgets, setBudgets,
       wishlist, setWishlist,
       globalMerchants, processGlobalTransaction,
