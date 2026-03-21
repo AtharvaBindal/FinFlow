@@ -12,7 +12,7 @@ const navItems = [
 ];
 
 export default function Sidebar() {
-  const { user, setUser, wishlist, transactions } = useAppContext();
+  const { user, setUser, wishlist, balance } = useAppContext();
   const navigate = useNavigate();
 
   const handleLogout = () => {
