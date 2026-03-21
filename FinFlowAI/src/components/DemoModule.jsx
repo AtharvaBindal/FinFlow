@@ -46,9 +46,9 @@ export default function DemoModule() {
     <button 
       onClick={simulateData}
       disabled={loading}
-      className="flex items-center gap-2 px-4 py-2 bg-surface hover:bg-white/5 border border-border rounded-xl text-xs font-mono text-muted hover:text-text transition-colors disabled:opacity-50"
+      className="flex items-center gap-2 px-4 py-2 bg-surface hover:opacity-80/5 border border-border rounded-xl text-xs font-mono text-muted hover:text-text transition-colors disabled:opacity-50"
     >
-      <Zap className={`w-3 h-3 ${loading ? 'animate-pulse text-emerald' : 'text-blue'}`} />
+      <Zap className={`w-3 h-3 ${loading ? 'animate-pulse text-accent' : 'text-blue'}`} />
       <span>{loading ? 'Simulating Database...' : 'Demo Mode (50+ TXs)'}</span>
     </button>
   );

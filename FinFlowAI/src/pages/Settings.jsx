@@ -69,7 +69,7 @@ export default function Settings() {
           </div>
           <button 
              onClick={() => setUser({...user, theme: user.theme === 'light' ? 'dark' : 'light'})}
-             className="bg-accent text-bg px-4 py-2 rounded-lg text-xs font-bold font-head uppercase tracking-wider transition-colors hover:bg-white"
+             className="bg-accent text-bg px-4 py-2 rounded-lg text-xs font-bold font-head uppercase tracking-wider transition-colors hover:opacity-80"
           >
              {user.theme === 'light' ? 'Use Dark' : 'Use Light'}
           </button>
@@ -83,7 +83,7 @@ export default function Settings() {
         <div className="flex flex-col gap-2">
            <label className="text-xs text-muted uppercase tracking-wider">Monthly Income ({currencySymbol})</label>
            <input type="number"
-              className="bg-surface border border-border p-3 rounded-xl outline-none focus:border-emerald transition-colors"
+              className="bg-surface border border-border p-3 rounded-xl outline-none focus:border-accent transition-colors"
               value={wishlist.income}
               onChange={(e) => setWishlist({...wishlist, income: Number(e.target.value)})}
            />
@@ -94,7 +94,7 @@ export default function Settings() {
            <div className="flex flex-col gap-2 flex-1">
              <label className="text-xs text-muted uppercase tracking-wider">Goal Name</label>
              <input type="text"
-                className="bg-surface border border-border p-3 rounded-xl outline-none focus:border-emerald transition-colors"
+                className="bg-surface border border-border p-3 rounded-xl outline-none focus:border-accent transition-colors"
                 value={wishlist.goalName}
                 onChange={(e) => setWishlist({...wishlist, goalName: e.target.value})}
              />
@@ -103,7 +103,7 @@ export default function Settings() {
            <div className="flex flex-col gap-2 flex-1">
              <label className="text-xs text-muted uppercase tracking-wider">Goal Target ({currencySymbol})</label>
              <input type="number"
-                className="bg-surface border border-border p-3 rounded-xl outline-none focus:border-emerald transition-colors"
+                className="bg-surface border border-border p-3 rounded-xl outline-none focus:border-accent transition-colors"
                 value={wishlist.goalPrice}
                 onChange={(e) => setWishlist({...wishlist, goalPrice: Number(e.target.value)})}
              />
@@ -113,7 +113,7 @@ export default function Settings() {
         <div className="flex flex-col gap-2">
            <label className="text-xs text-muted uppercase tracking-wider">Essential Bills / Month ({currencySymbol})</label>
            <input type="number"
-              className="bg-surface border border-border p-3 rounded-xl outline-none focus:border-emerald transition-colors"
+              className="bg-surface border border-border p-3 rounded-xl outline-none focus:border-accent transition-colors"
               value={wishlist.essentialBills}
               onChange={(e) => setWishlist({...wishlist, essentialBills: Number(e.target.value)})}
            />
@@ -153,9 +153,9 @@ export default function Settings() {
 
       {/* Export Data */}
       <div className="glass p-6 flex flex-col gap-4 max-w-lg">
-        <h2 className="text-lg font-bold font-head text-emerald">Export Data</h2>
+        <h2 className="text-lg font-bold font-head text-accent">Export Data</h2>
         <p className="text-sm text-muted">Download all your transactions as an Excel-compatible CSV file.</p>
-        <button onClick={handleExportCSV} className="flex items-center justify-center gap-2 bg-emerald/10 hover:bg-emerald/20 text-emerald border border-emerald/20 p-3 rounded-xl transition-colors font-bold tracking-wide mt-2">
+        <button onClick={handleExportCSV} className="flex items-center justify-center gap-2 bg-accent/10 hover:bg-accent/20 text-accent border border-accent/20 p-3 rounded-xl transition-colors font-bold tracking-wide mt-2">
            <Download className="w-5 h-5" /> Export to Excel (CSV)
         </button>
       </div>

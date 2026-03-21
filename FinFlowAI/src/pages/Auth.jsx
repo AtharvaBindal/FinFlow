@@ -293,7 +293,7 @@ export default function Auth() {
 
           <button
             type="submit"
-            className="mt-2 w-full bg-accent text-bg font-head font-bold text-base py-3.5 rounded-xl hover:bg-white hover:-translate-y-0.5 accent-glow transition-all active:translate-y-0"
+            className="mt-2 w-full bg-accent text-bg font-head font-bold text-base py-3.5 rounded-xl hover:opacity-80 hover:-translate-y-0.5 accent-glow transition-all active:translate-y-0"
           >
             {mode === 'login' ? 'Sign In' : 'Create Account'}
           </button>

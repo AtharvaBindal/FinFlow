@@ -52,7 +52,7 @@ export default function FinancialCoach() {
         <div className="glass w-72 p-4 rounded-2xl shadow-2xl animate-in slide-in-from-bottom-5">
            <div className="flex justify-between items-start mb-3">
               <div className="flex items-center gap-2">
-                 <div className="w-6 h-6 rounded-full bg-emerald flex items-center justify-center font-bold text-bg text-xs">AI</div>
+                 <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center font-bold text-bg text-xs">AI</div>
                  <span className="font-head font-bold text-sm">FinCoach</span>
               </div>
               <button onClick={() => setOpen(false)} className="text-muted hover:text-text">
@@ -64,7 +64,7 @@ export default function FinancialCoach() {
            </p>
 
            <div className="mt-4 pt-4 border-t border-border flex justify-end">
-              <button onClick={exportPDF} className="flex items-center gap-2 text-xs bg-surface border border-border px-3 py-2 rounded-xl hover:border-emerald transition-colors">
+              <button onClick={exportPDF} className="flex items-center gap-2 text-xs bg-surface border border-border px-3 py-2 rounded-xl hover:border-accent transition-colors">
                 <Download className="w-3 h-3" /> Export PDF Report
               </button>
            </div>
@@ -74,7 +74,7 @@ export default function FinancialCoach() {
       {/* Bubble */}
       <button 
         onClick={() => setOpen(!open)}
-        className="w-14 h-14 rounded-full bg-emerald text-bg flex items-center justify-center shadow-xl hover:scale-105 active:scale-95 transition-all"
+        className="w-14 h-14 rounded-full bg-accent text-bg flex items-center justify-center shadow-xl hover:scale-105 active:scale-95 transition-all"
       >
         <MessageSquare className="w-6 h-6" />
         {/* Unread dot indicator */}

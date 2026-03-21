@@ -31,12 +31,7 @@ export default function Sidebar() {
   const totalSavedSoFar = Math.max(0, (balance || 0) - (wishlist.essentialBills || 0));
   const goalProgressPct = Math.min(100, wishlist.goalPrice > 0 ? (totalSavedSoFar / wishlist.goalPrice) * 100 : 0);
   
-  const getProgressColor = (pct) => {
-    const r = Math.round(255 - (pct / 100) * (255 - 30));
-    const g = Math.round(60 + (pct / 100) * (179 - 60));
-    const b = Math.round(60 - (pct / 100) * 60);
-    return `rgb(${r},${g},${b})`;
-  };
+  const getProgressColor = () => 'var(--color-accent)';
 
   return (
     <div className="glass w-full h-full flex flex-col pt-8 pb-6 px-4 shadow-2xl relative overflow-hidden">
@@ -59,7 +54,7 @@ export default function Sidebar() {
               } : {}}
               className={({ isActive }) => 
                 `flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group ${
-                  isActive ? 'shadow-md' : 'text-muted hover:text-text hover:bg-white/5'
+                  isActive ? 'shadow-md' : 'text-muted hover:text-text hover:opacity-80/5'
                 }`
               }
             >

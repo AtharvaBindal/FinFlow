@@ -125,7 +125,7 @@ export default function Subscriptions() {
              <label className="text-[10px] uppercase font-bold text-rose mb-1 block">Monthly Cost ($)</label>
              <input type="number" value={newSub.amount} onChange={e => setNewSub({...newSub, amount: e.target.value})} placeholder="0.00" className="w-full bg-surface border border-border rounded-lg p-2.5 text-sm font-mono text-text outline-none focus:border-rose" />
            </div>
-           <button onClick={handleAddManual} className="w-full md:w-auto bg-rose text-bg font-bold px-6 py-2.5 rounded-lg whitespace-nowrap hover:bg-white transition-colors">
+           <button onClick={handleAddManual} className="w-full md:w-auto bg-rose text-bg font-bold px-6 py-2.5 rounded-lg whitespace-nowrap hover:opacity-80 transition-colors">
               Save Bloodsucker
            </button>
         </div>
@@ -196,10 +196,10 @@ export default function Subscriptions() {
               </div>
 
               <div className="flex gap-3">
-                 <button onClick={() => setSelectedSub(null)} className="flex-1 py-3 bg-surface border border-border text-text font-bold rounded-xl hover:bg-white/10 transition-colors">
+                 <button onClick={() => setSelectedSub(null)} className="flex-1 py-3 bg-surface border border-border text-text font-bold rounded-xl hover:opacity-80/10 transition-colors">
                    Close
                  </button>
-                 <a href={`https://www.google.com/search?q=how+to+cancel+${selectedSub.merchant}+subscription`} target="_blank" rel="noreferrer" className="flex-1 py-3 bg-rose flex items-center justify-center gap-2 text-bg font-bold rounded-xl hover:bg-white transition-colors">
+                 <a href={`https://www.google.com/search?q=how+to+cancel+${selectedSub.merchant}+subscription`} target="_blank" rel="noreferrer" className="flex-1 py-3 bg-rose flex items-center justify-center gap-2 text-bg font-bold rounded-xl hover:opacity-80 transition-colors">
                    Cancel It <ExternalLink className="w-4 h-4" />
                  </a>
               </div>

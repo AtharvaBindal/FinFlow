@@ -22,7 +22,7 @@ export default function BottomTab() {
             className={({ isActive }) => 
               `flex flex-col items-center gap-1 p-2 rounded-xl transition-all duration-200 ${
                 isActive 
-                  ? 'text-emerald' 
+                  ? 'text-accent' 
                   : 'text-muted hover:text-text'
               }`
             }

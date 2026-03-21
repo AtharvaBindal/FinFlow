@@ -20,14 +20,7 @@ export default function Dashboard() {
   // Dream Tracker Math
   const totalSavedSoFar = Math.max(0, (balance || 0) - (wishlist.essentialBills || 0));
   const goalProgressPct = Math.min(100, wishlist.goalPrice > 0 ? (totalSavedSoFar / wishlist.goalPrice) * 100 : 0);
-  const getProgressColor = (pct) => {
-    // 100% -> rgb(30, 179, 0)
-    // 0% -> rgb(255, 60, 60)
-    const r = Math.round(255 - (pct / 100) * (255 - 30));
-    const g = Math.round(60 + (pct / 100) * (179 - 60));
-    const b = Math.round(60 - (pct / 100) * 60);
-    return `rgb(${r},${g},${b})`;
-  };
+  const getProgressColor = () => 'var(--color-accent)';
   
   // 1. Math & Data Logic
   const thisMonthTxs = transactions.filter(t => t.date?.startsWith(currentMonth));
@@ -184,7 +177,7 @@ export default function Dashboard() {
                    <button onClick={handleSaveLimit} className="text-accent hover:text-text"><Check className="w-4 h-4" /></button>
                  </div>
                ) : (
-                 <div className="text-lg font-bold text-emerald flex items-center gap-2 group-hover:cursor-pointer" onClick={() => { setTempLimit(currentDailyLimit.toString()); setIsEditingLimit(true); }}>
+                 <div className="text-lg font-bold text-accent flex items-center gap-2 group-hover:cursor-pointer" onClick={() => { setTempLimit(currentDailyLimit.toString()); setIsEditingLimit(true); }}>
                    {fmt(currentDailyLimit)} <span className="text-xs text-muted font-normal">/ day</span>
                    <Edit2 className="w-3 h-3 text-muted group-hover:text-accent opacity-0 group-hover:opacity-100 transition-opacity" />
                  </div>
@@ -226,8 +219,8 @@ export default function Dashboard() {
             <div className="grid grid-cols-2 gap-4 mt-6">
                <div className="bg-surface/40 p-3 rounded-xl border border-border">
                  <div className="text-[10px] uppercase tracking-widest text-muted mb-1">Total In (Mo)</div>
-                 <div className="text-emerald font-bold font-mono">{fmt((wishlist.income || 0) + (monthDeposits || 0))}</div>
-                 {monthDeposits > 0 && <div className="text-[8px] text-emerald mt-1 font-bold">+ Recent Deposit Logged</div>}
+                 <div className="text-accent font-bold font-mono">{fmt((wishlist.income || 0) + (monthDeposits || 0))}</div>
+                 {monthDeposits > 0 && <div className="text-[8px] text-accent mt-1 font-bold">+ Recent Deposit Logged</div>}
                </div>
                 <div className="bg-surface/40 p-3 rounded-xl border border-border">
                  <div className="text-[10px] uppercase tracking-widest text-muted mb-1">Total Out</div>
@@ -330,7 +323,7 @@ export default function Dashboard() {
 
       {/* Premium SVG Sankey (Money Flow) Diagram */}
       <div className="glass p-6 rounded-2xl w-full border border-border relative overflow-hidden">
-        <div className="absolute -right-20 -top-20 w-64 h-64 bg-emerald/5 blur-[100px] rounded-full pointer-events-none"></div>
+        <div className="absolute -right-20 -top-20 w-64 h-64 bg-accent/5 blur-[100px] rounded-full pointer-events-none"></div>
         
         <h3 className="text-sm font-bold font-head uppercase tracking-wider text-text mb-6">Cash Flow Architecture</h3>
         
@@ -360,8 +353,8 @@ export default function Dashboard() {
             </svg>
 
             {/* Income Node */}
-            <div className="z-10 bg-surface border border-emerald/50 p-4 rounded-xl shadow-[0_0_20px_rgba(200,241,53,0.1)] flex flex-col items-center w-36">
-              <span className="text-[10px] text-emerald uppercase tracking-widest font-bold">Income</span>
+            <div className="z-10 bg-surface border border-accent/50 p-4 rounded-xl shadow-[0_0_20px_rgba(200,241,53,0.1)] flex flex-col items-center w-36">
+              <span className="text-[10px] text-accent uppercase tracking-widest font-bold">Income</span>
               <span className="text-xl font-black font-head text-text">{fmt(wishlist.income)}</span>
             </div>
 

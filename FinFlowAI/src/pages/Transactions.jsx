@@ -130,7 +130,7 @@ export default function Transactions() {
              >Expense</button>
              <button 
                onClick={() => setType('deposit')} 
-               className={`px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-md transition-all ${type === 'deposit' ? 'bg-emerald/20 text-emerald' : 'text-muted hover:text-text'}`}
+               className={`px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-md transition-all ${type === 'deposit' ? 'bg-accent/20 text-accent' : 'text-muted hover:text-text'}`}
              >Deposit</button>
           </div>
         </div>
@@ -246,7 +246,7 @@ export default function Transactions() {
                             <div className="text-muted/80">{log.oldData.merchant} • {fmt(log.oldData.amount)} • {log.oldData.category}</div>
                           </div>
                           <div>
-                            <span className="text-emerald opacity-80 uppercase tracking-widest text-[9px] block mb-1">New Data</span>
+                            <span className="text-accent opacity-80 uppercase tracking-widest text-[9px] block mb-1">New Data</span>
                             <div className="text-text">{log.newData.merchant} • {fmt(log.newData.amount)} • {log.newData.category}</div>
                           </div>
                        </div>
@@ -266,7 +266,7 @@ export default function Transactions() {
                   const catData = CATEGORIES.find(c => c.name === t.category) || { icon: '📦' };
                   
                   return (
-                    <div key={t.id} className="p-4 bg-surface rounded-xl border border-border flex justify-between items-center group hover:bg-white/5 transition-colors shadow-sm">
+                    <div key={t.id} className="p-4 bg-surface rounded-xl border border-border flex justify-between items-center group hover:opacity-80/5 transition-colors shadow-sm">
                       <div className="flex items-center gap-4">
                           <div className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center text-lg shadow-sm">
                               {catData.icon}
@@ -275,7 +275,7 @@ export default function Transactions() {
                              <div className="flex items-center gap-2">
                                <span className="font-semibold text-text">{t.merchant}</span>
                                {verified && (
-                                 <div className="flex items-center gap-1 bg-emerald/10 text-emerald px-2 py-0.5 rounded-md border border-emerald/20" title="Community Verified Merchant">
+                                 <div className="flex items-center gap-1 bg-accent/10 text-accent px-2 py-0.5 rounded-md border border-accent/20" title="Community Verified Merchant">
                                     <ShieldCheck className="w-3 h-3" />
                                     <span className="text-[10px] font-bold tracking-wider">VERIFIED</span>
                                  </div>
@@ -291,7 +291,7 @@ export default function Transactions() {
                       </div>
                       <div className="flex items-center gap-4">
                          <div className="text-right flex flex-col gap-1">
-                            <div className={`font-head font-bold text-lg ${t.type === 'deposit' ? 'text-emerald' : 'text-text'}`}>
+                            <div className={`font-head font-bold text-lg ${t.type === 'deposit' ? 'text-accent' : 'text-text'}`}>
                               {t.type === 'deposit' ? '+' : '-'}{fmt(t.amount)}
                             </div>
                             <div className="text-[10px] text-muted font-mono">{t.date}</div>

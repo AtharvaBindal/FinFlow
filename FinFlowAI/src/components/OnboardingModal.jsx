@@ -48,13 +48,13 @@ export default function OnboardingModal() {
         
         {/* Step Indicator */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-surface flex">
-          <div className={`h-full bg-emerald transition-all duration-500 ${step === 1 ? 'w-1/2' : 'w-full'}`}></div>
+          <div className={`h-full bg-accent transition-all duration-500 ${step === 1 ? 'w-1/2' : 'w-full'}`}></div>
         </div>
 
         {step === 1 && (
           <div className="flex flex-col gap-6">
              <div className="text-center">
-               <div className="w-12 h-12 bg-white/5 border border-border rounded-full flex items-center justify-center mx-auto mb-4 text-emerald">
+               <div className="w-12 h-12 bg-white/5 border border-border rounded-full flex items-center justify-center mx-auto mb-4 text-accent">
                  <User className="w-6 h-6" />
                </div>
                <h2 className="font-head font-bold text-2xl text-text">Financial Profile</h2>
@@ -64,19 +64,19 @@ export default function OnboardingModal() {
              <div className="flex flex-col gap-4">
                <div>
                   <label className="text-[10px] uppercase text-muted tracking-widest ml-1 mb-1 block">Full Name</label>
-                  <input type="text" className="w-full bg-surface border border-border p-3 rounded-xl outline-none focus:border-emerald text-sm" placeholder="John Doe" value={name} onChange={e => setName(e.target.value)} />
+                  <input type="text" className="w-full bg-surface border border-border p-3 rounded-xl outline-none focus:border-accent text-sm" placeholder="John Doe" value={name} onChange={e => setName(e.target.value)} />
                </div>
                 <div className="flex gap-4">
                   <div className="flex-1">
                      <label className="text-[10px] uppercase text-muted tracking-widest ml-1 mb-1 block">Monthly Income</label>
                      <div className="relative flex items-center">
                         <span className="absolute left-3 w-4 h-4 text-muted font-bold text-sm">{getCurrencySymbol(currency)}</span>
-                        <input type="number" className="w-full bg-surface border border-border p-3 pl-9 rounded-xl outline-none focus:border-emerald text-sm" value={income} onChange={e => setIncome(Number(e.target.value))} />
+                        <input type="number" className="w-full bg-surface border border-border p-3 pl-9 rounded-xl outline-none focus:border-accent text-sm" value={income} onChange={e => setIncome(Number(e.target.value))} />
                      </div>
                   </div>
                   <div className="w-1/3">
                      <label className="text-[10px] uppercase text-muted tracking-widest ml-1 mb-1 block">Currency</label>
-                     <select className="w-full bg-surface border border-border p-3 rounded-xl outline-none focus:border-emerald text-sm" value={currency} onChange={e => setCurrency(e.target.value)}>
+                     <select className="w-full bg-surface border border-border p-3 rounded-xl outline-none focus:border-accent text-sm" value={currency} onChange={e => setCurrency(e.target.value)}>
                        <option value="USD">USD ($)</option>
                        <option value="EUR">EUR (€)</option>
                        <option value="INR">INR (₹)</option>
@@ -94,7 +94,7 @@ export default function OnboardingModal() {
                 </div>
              </div>
 
-             <button onClick={nextStep} disabled={!name.trim() || income <= 0} className="w-full py-3 bg-emerald text-bg font-bold font-head rounded-xl disabled:opacity-50 mt-2 hover:bg-white transition-colors">
+             <button onClick={nextStep} disabled={!name.trim() || income <= 0} className="w-full py-3 bg-accent text-bg font-bold font-head rounded-xl disabled:opacity-50 mt-2 hover:opacity-80 transition-colors">
                Continue
              </button>
           </div>
@@ -111,8 +111,8 @@ export default function OnboardingModal() {
              </div>
 
              <div className="flex flex-col gap-3">
-                <label className="flex items-start gap-3 p-4 bg-surface rounded-xl border border-border cursor-pointer group hover:bg-white/5 transition-colors">
-                  <div className="mt-0.5"><Bell className={`w-5 h-5 ${perms.sms ? 'text-emerald' : 'text-muted'}`} /></div>
+                <label className="flex items-start gap-3 p-4 bg-surface rounded-xl border border-border cursor-pointer group hover:opacity-80/5 transition-colors">
+                  <div className="mt-0.5"><Bell className={`w-5 h-5 ${perms.sms ? 'text-accent' : 'text-muted'}`} /></div>
                   <div className="flex-1">
                     <div className="text-sm font-semibold text-text">SMS/Notifications</div>
                     <div className="text-[10px] text-muted leading-relaxed">For real-time spending alerts and goal warnings.</div>
@@ -120,8 +120,8 @@ export default function OnboardingModal() {
                   <input type="checkbox" className="accent-emerald w-4 h-4 mt-1" checked={perms.sms} onChange={e => setPerms({...perms, sms: e.target.checked})} />
                 </label>
 
-                <label className="flex items-start gap-3 p-4 bg-surface rounded-xl border border-border cursor-pointer group hover:bg-white/5 transition-colors">
-                  <div className="mt-0.5"><MapPin className={`w-5 h-5 ${perms.location ? 'text-emerald' : 'text-muted'}`} /></div>
+                <label className="flex items-start gap-3 p-4 bg-surface rounded-xl border border-border cursor-pointer group hover:opacity-80/5 transition-colors">
+                  <div className="mt-0.5"><MapPin className={`w-5 h-5 ${perms.location ? 'text-accent' : 'text-muted'}`} /></div>
                   <div className="flex-1">
                     <div className="text-sm font-semibold text-text">Location Data</div>
                     <div className="text-[10px] text-muted leading-relaxed">Tag merchant locations for superior auto-categorization maps.</div>
@@ -129,13 +129,13 @@ export default function OnboardingModal() {
                   <input type="checkbox" className="accent-emerald w-4 h-4 mt-1" checked={perms.location} onChange={e => setPerms({...perms, location: e.target.checked})} />
                 </label>
 
-                <label className="flex items-start gap-3 p-4 bg-surface rounded-xl border border-border cursor-pointer group hover:bg-white/5 transition-colors relative overflow-hidden">
-                  <div className="absolute inset-0 bg-emerald/5 z-0 pointer-events-none"></div>
-                  <div className="mt-0.5 z-10"><Users className={`w-5 h-5 ${perms.community ? 'text-emerald' : 'text-muted'}`} /></div>
+                <label className="flex items-start gap-3 p-4 bg-surface rounded-xl border border-border cursor-pointer group hover:opacity-80/5 transition-colors relative overflow-hidden">
+                  <div className="absolute inset-0 bg-accent/5 z-0 pointer-events-none"></div>
+                  <div className="mt-0.5 z-10"><Users className={`w-5 h-5 ${perms.community ? 'text-accent' : 'text-muted'}`} /></div>
                   <div className="flex-1 z-10">
                     <div className="text-sm font-semibold text-text flex gap-2 items-center">
                        Crowdsourced Intelligence
-                       <span className="text-[9px] bg-emerald/20 text-emerald px-1.5 py-0.5 rounded border border-emerald/30">HACKATHON FEATURE</span>
+                       <span className="text-[9px] bg-accent/20 text-accent px-1.5 py-0.5 rounded border border-accent/30">HACKATHON FEATURE</span>
                     </div>
                     <div className="text-[10px] text-muted leading-relaxed">Share anonymous tags to build our Community Verified Merchant database.</div>
                   </div>
@@ -144,10 +144,10 @@ export default function OnboardingModal() {
              </div>
 
              <div className="flex gap-3 mt-2">
-               <button onClick={() => setStep(1)} className="px-5 py-3 bg-surface border border-border text-text font-bold font-head rounded-xl hover:bg-white/10 transition-colors">
+               <button onClick={() => setStep(1)} className="px-5 py-3 bg-surface border border-border text-text font-bold font-head rounded-xl hover:opacity-80/10 transition-colors">
                  Back
                </button>
-               <button onClick={completeOnboarding} className="flex-1 py-3 bg-emerald flex items-center justify-center gap-2 text-bg font-bold font-head rounded-xl hover:bg-white transition-colors">
+               <button onClick={completeOnboarding} className="flex-1 py-3 bg-accent flex items-center justify-center gap-2 text-bg font-bold font-head rounded-xl hover:opacity-80 transition-colors">
                  Complete Setup <CheckCircle className="w-4 h-4" />
                </button>
              </div>

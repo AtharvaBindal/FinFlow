@@ -42,10 +42,10 @@ export default function MagicBox() {
 
   return (
     <form onSubmit={handleSubmit} className="w-full relative group">
-      <div className="absolute inset-0 bg-emerald/20 blur-xl group-hover:bg-emerald/30 transition-all rounded-full z-0 pointer-events-none"></div>
+      <div className="absolute inset-0 bg-accent/20 blur-xl group-hover:bg-accent/30 transition-all rounded-full z-0 pointer-events-none"></div>
       
       <div className="relative z-10 bg-card border border-border flex items-center p-2 rounded-full shadow-lg">
-        <div className="pl-4 pr-3 text-emerald animate-pulse">
+        <div className="pl-4 pr-3 text-accent animate-pulse">
           <Sparkles className="w-5 h-5" />
         </div>
         
@@ -60,7 +60,7 @@ export default function MagicBox() {
         <button 
           type="submit"
           disabled={!input.trim()}
-          className="bg-emerald text-bg p-3 rounded-full hover:bg-white transition-colors disabled:opacity-50 flex-shrink-0"
+          className="bg-accent text-bg p-3 rounded-full hover:opacity-80 transition-colors disabled:opacity-50 flex-shrink-0"
         >
           <Send className="w-4 h-4" />
         </button>

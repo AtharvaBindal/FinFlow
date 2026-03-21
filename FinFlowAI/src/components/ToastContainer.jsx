@@ -26,7 +26,7 @@ export default function ToastContainer() {
         <div 
           key={toast.id}
           className={`px-4 py-3 rounded-lg shadow-xl border flex items-center gap-3 animate-in slide-in-from-bottom-5 fade-in duration-300
-            ${toast.type === 'error' ? 'bg-rose/10 border-rose text-rose' : 'bg-emerald text-bg font-semibold'}`}
+            ${toast.type === 'error' ? 'bg-rose/10 border-rose text-rose' : 'bg-accent text-bg font-semibold'}`}
         >
           <span className="text-sm font-head tracking-wide">{toast.message}</span>
         </div>

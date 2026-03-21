@@ -58,8 +58,8 @@ export default function Profile() {
             <div>
               <h2 className="text-2xl font-bold text-text tracking-tight">{formData.name || 'Anonymous Hacker'}</h2>
               <div className="flex items-center gap-2 mt-1">
-                <ShieldCheck className="w-4 h-4 text-emerald" />
-                <span className="text-xs uppercase tracking-widest text-emerald font-bold">Pro Member</span>
+                <ShieldCheck className="w-4 h-4 text-accent" />
+                <span className="text-xs uppercase tracking-widest text-accent font-bold">Pro Member</span>
               </div>
             </div>
           </div>
