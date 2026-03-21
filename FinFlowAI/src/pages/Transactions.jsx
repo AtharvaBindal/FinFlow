@@ -266,14 +266,14 @@ export default function Transactions() {
                   const catData = CATEGORIES.find(c => c.name === t.category) || { icon: '📦' };
                   
                   return (
-                    <div key={t.id} className="p-4 bg-surface rounded-xl border border-border flex justify-between items-center group hover:opacity-80/5 transition-colors shadow-sm">
-                      <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center text-lg shadow-sm">
+                    <div key={t.id} className="p-4 bg-surface rounded-xl border border-border flex justify-between items-center group hover:bg-white/5 transition-colors shadow-sm gap-2">
+                      <div className="flex items-center gap-3 overflow-hidden">
+                          <div className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center text-lg shadow-sm flex-shrink-0">
                               {catData.icon}
                           </div>
-                          <div className="flex flex-col gap-1 items-start">
-                             <div className="flex items-center gap-2">
-                               <span className="font-semibold text-text">{t.merchant}</span>
+                          <div className="flex flex-col gap-1 items-start min-w-0">
+                             <div className="flex items-center gap-2 max-w-full">
+                               <span className="font-semibold text-text truncate max-w-[100px] md:max-w-[200px]">{t.merchant}</span>
                                {verified && (
                                  <div className="flex items-center gap-1 bg-accent/10 text-accent px-2 py-0.5 rounded-md border border-accent/20" title="Community Verified Merchant">
                                     <ShieldCheck className="w-3 h-3" />
@@ -289,12 +289,12 @@ export default function Transactions() {
                              </div>
                           </div>
                       </div>
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-3 flex-shrink-0">
                          <div className="text-right flex flex-col gap-1">
-                            <div className={`font-head font-bold text-lg ${t.type === 'deposit' ? 'text-accent' : 'text-text'}`}>
+                            <div className={`font-head font-bold text-lg whitespace-nowrap ${t.type === 'deposit' ? 'text-accent' : 'text-text'}`}>
                               {t.type === 'deposit' ? '+' : '-'}{fmt(t.amount)}
                             </div>
-                            <div className="text-[10px] text-muted font-mono">{t.date}</div>
+                            <div className="text-[10px] text-muted font-mono whitespace-nowrap">{t.date}</div>
                          </div>
                          <button 
                            onClick={() => handleEditClick(t)} 

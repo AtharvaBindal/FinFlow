@@ -130,14 +130,31 @@ export default function Profile() {
               <label className="text-xs font-bold uppercase tracking-widest text-muted flex items-center gap-2">
                 <MapPin className="w-4 h-4" /> Location
               </label>
-              <input
-                type="text"
+              <select
                 name="location"
                 value={formData.location}
                 onChange={handleChange}
-                className="bg-surface border border-border rounded-xl px-4 py-3 text-text focus:outline-none focus:border-accent transition-colors"
-                placeholder="City, Country"
-              />
+                className="bg-surface border border-border rounded-xl px-4 py-3 text-text focus:outline-none focus:border-accent transition-colors appearance-none"
+              >
+                <option value="" disabled>Select Region</option>
+                <optgroup label="North America">
+                  <option value="New York, USA">New York, USA</option>
+                  <option value="San Francisco, USA">San Francisco, USA</option>
+                  <option value="Toronto, Canada">Toronto, Canada</option>
+                </optgroup>
+                <optgroup label="Europe">
+                  <option value="London, UK">London, UK</option>
+                  <option value="Paris, France">Paris, France</option>
+                  <option value="Berlin, Germany">Berlin, Germany</option>
+                </optgroup>
+                <optgroup label="Asia-Pacific">
+                  <option value="Tokyo, Japan">Tokyo, Japan</option>
+                  <option value="Mumbai, India">Mumbai, India</option>
+                  <option value="Bangalore, India">Bangalore, India</option>
+                  <option value="Singapore">Singapore</option>
+                  <option value="Sydney, Australia">Sydney, Australia</option>
+                </optgroup>
+              </select>
             </div>
           </div>
 
