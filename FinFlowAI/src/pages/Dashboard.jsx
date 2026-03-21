@@ -52,12 +52,22 @@ export default function Dashboard() {
 
   // 3. Smart Text Insights (Daily Briefing)
   const generateInsight = () => {
-    if (transactions.length === 0) return "Welcome to FinFlow! Add your first transaction to get personalized insights.";
-    if (balanceWarning?.level === 'critical') return "CRITICAL ALERT: Your balance is almost depleted! Immediate spending freeze strongly recommended.";
-    if (catTotals['Food'] > budgets['Food'] * 0.8) return "Gentle reminder: You're approaching your Food budget limits. Maybe skip the cafe tomorrow!";
-    if (overspend > 0) return `We went ${overspend > 50 ? 'significantly ' : ''}over the daily safe limit today. Reel it in tomorrow!`;
-    if (balancePercent > (100 - (new Date().getDate() / daysInMonth * 100))) return `You're crushing it! You have more balance remaining than expected for this time of month.`;
-    return "You're spending exactly at a healthy pace. Keep up the good work!";
+    if (transactions.length === 0) return "Welcome to FinFlow. Keep your wallet closed and we'll get along fine.";
+    if (balanceWarning?.level === 'critical') return "CRITICAL ALERT: You are practically bankrupt. Stop buying things immediately!";
+    
+    if (overspend > 0) return `You blew past your daily limit by ${fmt(overspend)} today. Your future self is judging you harshly right now.`;
+    
+    const highestCat = Object.entries(catTotals).sort((a,b) => b[1] - a[1])[0];
+    if (highestCat && highestCat[1] > 0 && highestCat[0] !== 'Bills') {
+        if (highestCat[0] === 'Food') return `You've dropped ${fmt(highestCat[1])} on Food this month. We both know there is food at home.`;
+        if (highestCat[0] === 'Shopping') return `Another ${fmt(highestCat[1])} gone to Shopping. Did you actually need more stuff, or were you just bored?`;
+        if (highestCat[0] === 'Entertainment') return `${fmt(highestCat[1])} on Entertainment? Staring at the wall is literally free.`;
+        return `You're hemorrhaging money on ${highestCat[0]} (${fmt(highestCat[1])}). Cut it out before you go broke.`;
+    }
+    
+    if (todaySpent > 0) return `You spent ${fmt(todaySpent)} today. Was that purchase really necessary for your survival?`;
+    
+    return "You actually didn't overspend today. An absolute miracle. Don't ruin it tomorrow.";
   };
 
   return (
