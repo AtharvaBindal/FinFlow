@@ -199,14 +199,14 @@ export default function Auth() {
           {/* Full Name — Sign Up only */}
           {mode === 'signup' && (
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] text-muted uppercase tracking-widest pl-1 font-semibold">Full Name</label>
+              <label className="text-[10px] text-text uppercase tracking-widest pl-1 font-bold">Full Name</label>
               <div className="relative flex items-center">
                 <User className="absolute left-3 w-4 h-4 text-muted" />
                 <input
                   type="text"
                   required
                   maxLength={60}
-                  className={`w-full bg-surface/50 border p-3 pl-10 rounded-xl outline-none transition-all text-sm placeholder-muted ${nameError ? 'border-rose focus:border-rose' : 'border-border focus:border-accent focus:ring-1 ring-accent'}`}
+                  className={`w-full bg-surface/50 border p-3 pl-10 rounded-xl outline-none transition-all text-base font-bold text-text placeholder-muted ${nameError ? 'border-rose focus:border-rose' : 'border-border focus:border-accent focus:ring-1 ring-accent'}`}
                   placeholder="John Michael Doe"
                   value={fullName}
                   onChange={e => handleNameChange(e.target.value)}
@@ -221,13 +221,13 @@ export default function Auth() {
 
           {/* Email */}
           <div className="flex flex-col gap-1">
-            <label className="text-[10px] text-muted uppercase tracking-widest pl-1 font-semibold">Email Address</label>
+            <label className="text-[10px] text-text uppercase tracking-widest pl-1 font-bold">Email Address</label>
             <div className="relative flex items-center">
               <Mail className="absolute left-3 w-4 h-4 text-muted" />
               <input
                 type="email"
                 required
-                className="w-full bg-surface/50 border border-border p-3 pl-10 rounded-xl outline-none focus:border-accent focus:ring-1 ring-accent transition-all placeholder-muted text-sm"
+                className="w-full bg-surface/50 border border-border p-3 pl-10 rounded-xl outline-none focus:border-accent focus:ring-1 ring-accent transition-all placeholder-muted text-base font-bold text-text"
                 placeholder="you@example.com"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
@@ -238,7 +238,7 @@ export default function Auth() {
           {/* Password */}
           <div className="flex flex-col gap-1">
             <div className="flex justify-between items-end pl-1">
-              <label className="text-[10px] text-muted uppercase tracking-widest font-semibold">Password</label>
+              <label className="text-[10px] text-text uppercase tracking-widest font-bold">Password</label>
               {mode === 'login' && <a href="#" className="text-[10px] text-accent hover:underline">Forgot?</a>}
             </div>
             <div className="relative flex items-center">
@@ -246,7 +246,7 @@ export default function Auth() {
               <input
                 type={showPwd ? 'text' : 'password'}
                 required
-                className="w-full bg-surface/50 border border-border p-3 pl-10 pr-10 rounded-xl outline-none focus:border-accent focus:ring-1 ring-accent transition-all placeholder-muted text-sm tracking-widest"
+                className="w-full bg-surface/50 border border-border p-3 pl-10 pr-10 rounded-xl outline-none focus:border-accent focus:ring-1 ring-accent transition-all placeholder-muted text-base font-bold text-text tracking-widest"
                 placeholder="••••••••"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
@@ -289,13 +289,13 @@ export default function Auth() {
           {/* Confirm Password — Sign Up only */}
           {mode === 'signup' && (
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] text-muted uppercase tracking-widest pl-1 font-semibold">Confirm Password</label>
+              <label className="text-[10px] text-text uppercase tracking-widest pl-1 font-bold">Confirm Password</label>
               <div className="relative flex items-center">
                 <Lock className="absolute left-3 w-4 h-4 text-muted" />
                 <input
                   type={showConfirmPwd ? 'text' : 'password'}
                   required
-                  className={`w-full bg-surface/50 border p-3 pl-10 pr-10 rounded-xl outline-none transition-all placeholder-muted text-sm tracking-widest ${confirmPwd && confirmPwd !== password ? 'border-rose' : 'border-border focus:border-accent focus:ring-1 ring-accent'}`}
+                  className={`w-full bg-surface/50 border p-3 pl-10 pr-10 rounded-xl outline-none transition-all placeholder-muted text-base font-bold text-text tracking-widest ${confirmPwd && confirmPwd !== password ? 'border-rose' : 'border-border focus:border-accent focus:ring-1 ring-accent'}`}
                   placeholder="••••••••"
                   value={confirmPwd}
                   onChange={e => setConfirmPwd(e.target.value)}
