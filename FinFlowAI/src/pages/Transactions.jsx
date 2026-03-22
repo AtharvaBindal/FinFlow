@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldCheck, Plus, Zap, Edit2 } from 'lucide-react';
+import { ShieldCheck, Plus, Zap, Edit2, Trash2, X } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import { KEYWORDS } from '../utils/logic';
 import { formatCurrency } from '../utils/currency';
@@ -16,7 +16,7 @@ const CATEGORIES = [
 ];
 
 export default function Transactions() {
-  const { user, transactions, auditLogs, globalMerchants, addTransaction, editTransaction } = useAppContext();
+  const { user, transactions, auditLogs, globalMerchants, addTransaction, editTransaction, deleteTransaction } = useAppContext();
   const fmt = (n) => formatCurrency(n, user.currency || 'USD');
   
   const [editingId, setEditingId] = useState(null);
@@ -209,9 +209,19 @@ export default function Transactions() {
           <button onClick={addSimulated} className="flex items-center gap-2 text-xs text-muted hover:text-text bg-surface border border-border px-3 py-2 rounded-lg transition-colors font-mono">
              <Zap className="w-3.5 h-3.5" /> Simulate Sample Data
           </button>
-          <button onClick={handleAdd} className="bg-accent text-black font-head font-bold text-sm px-6 py-2.5 rounded-lg hover:opacity-80 transition-colors flex items-center gap-2 tracking-wide">
-             {editingId ? 'Update Log' : `Add ${type === 'deposit' ? 'Deposit / Income' : 'Expense'}`} <Plus className="w-4 h-4" />
-          </button>
+          <div className="flex gap-2">
+            {editingId && (
+              <button 
+                onClick={() => { setEditingId(null); setDesc(''); setAmt(''); setCat(''); }} 
+                className="bg-surface border border-border text-muted font-head font-bold text-sm px-6 py-2.5 rounded-lg hover:text-text transition-colors flex items-center gap-2 tracking-wide"
+              >
+                Cancel <X className="w-4 h-4" />
+              </button>
+            )}
+            <button onClick={handleAdd} className="bg-accent text-black font-head font-bold text-sm px-6 py-2.5 rounded-lg hover:opacity-80 transition-colors flex items-center gap-2 tracking-wide">
+               {editingId ? 'Update Log' : `Add ${type === 'deposit' ? 'Deposit / Income' : 'Expense'}`} <Plus className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -298,10 +308,17 @@ export default function Transactions() {
                          </div>
                          <button 
                            onClick={() => handleEditClick(t)} 
-                           className="text-muted hover:text-text p-2 border border-border hover:border-accent rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                           className="text-muted hover:text-accent p-2 border border-border hover:border-accent rounded-lg transition-all opacity-0 group-hover:opacity-100"
                            title="Edit Transaction"
                          >
                             <Edit2 className="w-4 h-4" />
+                         </button>
+                         <button 
+                           onClick={() => { if(window.confirm('Are you sure you want to delete this transaction?')) deleteTransaction(t.id); }} 
+                           className="text-muted hover:text-rose p-2 border border-border hover:border-rose rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                           title="Delete Transaction"
+                         >
+                            <Trash2 className="w-4 h-4" />
                          </button>
                       </div>
                     </div>
