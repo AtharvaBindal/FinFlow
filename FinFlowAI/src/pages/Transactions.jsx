@@ -111,7 +111,7 @@ export default function Transactions() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col gap-6 animate-in fade-in duration-500 pb-20">
+    <div className="w-full min-h-full flex flex-col gap-6 animate-in fade-in duration-500 pb-20">
       <header>
         <h1 className="text-2xl font-bold font-head tracking-tight">Transactions</h1>
         <p className="text-sm text-muted">View and manage all your past entries.</p>
@@ -225,7 +225,7 @@ export default function Transactions() {
         </div>
       </div>
 
-      <div className="flex-1 glass rounded-2xl overflow-hidden flex flex-col shadow-inner">
+      <div className="glass rounded-2xl flex flex-col shadow-inner">
         <div className="p-5 border-b border-border/50 bg-[#ffffff02] flex justify-between items-center">
             <h2 className="text-xs text-muted tracking-widest uppercase font-bold">All Transactions</h2>
             <button 
@@ -235,7 +235,7 @@ export default function Transactions() {
               {showAuditLogs ? 'Hide Audit Logs' : 'View Edit History'}
             </button>
         </div>
-        <div className="overflow-y-auto p-4 md:p-6 flex-1">
+        <div className="p-4 md:p-6 flex-1">
             {showAuditLogs ? (
               <div className="flex flex-col gap-4">
                 <div className="bg-rose/10 border border-rose/30 p-3 rounded-xl mb-2 text-rose text-xs flex items-center gap-2 font-mono">
